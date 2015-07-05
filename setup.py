@@ -6,7 +6,8 @@ setup(name='tapl',
       url='https://github.com/frutiger/tapl',
       author='Masud Rahman',
       license='MIT',
-      packages=['tapl'],
+      packages=['tapl', 'tapl/arith'],
       entry_points={
+          'console_scripts': ['arith=tapl.driver:arith'],
       })
 

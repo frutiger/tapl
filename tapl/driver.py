@@ -19,3 +19,6 @@ def drive(interpreter):
     interpreter = importlib.import_module(module)
     start(interpreter.interpret, interpreter.repl)
 
+def arith():
+    drive('arith')
+
