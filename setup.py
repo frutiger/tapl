@@ -1,3 +1,5 @@
+# setup
+
 from setuptools import setup
 
 setup(name='tapl',
@@ -8,6 +10,6 @@ setup(name='tapl',
       license='MIT',
       packages=['tapl', 'tapl/arith'],
       entry_points={
-          'console_scripts': ['arith=tapl.driver:arith'],
+          'console_scripts': ['arith=tapl.__main__:main'],
       })
 

@@ -1,24 +1,20 @@
 # tapl.arith.parser
 
-from . import terms
+from .. import errors
 
-class Error(RuntimeError):
-    pass
-
-class IncompleteError(Error):
-    pass
+from .  import terms
 
 def error(message, location):
-    raise Error('{} (at {}:{})'.format(message,
-                                       location.line,
-                                       location.column))
+    raise errors.ParserError('{} (at {}:{})'.format(message,
+                                                    location.line,
+                                                    location.column))
 
 def parse(tokens):
     def next_token(tokens):
         try:
             return next(tokens)
         except StopIteration:
-            raise IncompleteError('Unexpected end of input')
+            raise errors.IncompleteParseError('Unexpected end of input')
 
     def parse_if(tokens):
         def expect(tokens, value):
