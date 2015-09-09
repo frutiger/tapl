@@ -63,6 +63,7 @@ def main():
     parser.add_argument('interpreter', nargs='?', default=os.path.basename(sys.argv[0]))
     parser.add_argument('-i', '--input',  type=str)
     parser.add_argument('-o', '--output', type=str)
+    parser.add_argument('-f', '--format', default='text')
     args = parser.parse_args()
 
     package = 'tapl.' + args.interpreter
@@ -72,7 +73,8 @@ def main():
         print('Unknown interpreter: ' + args.interpreter, file=sys.stderr)
         return -1
 
-    Formatter = get(package, 'formatters', 'TextFormatter')
+    formatter_name = args.format[0].upper() + args.format[1:] + 'Formatter'
+    Formatter = get(package, 'formatters', formatter_name)
 
     if args.input is None and args.output is None:
         import readline
