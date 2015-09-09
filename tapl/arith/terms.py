@@ -13,3 +13,8 @@ If         = namedtuple('If',         ['location',
                                        'true_value',
                                        'false_value'])
 
+Succ.subterms   = { 'argument' }
+Pred.subterms   = { 'argument' }
+IsZero.subterms = { 'argument' }
+If.subterms     = { 'predicate', 'true_value', 'false_value' }
+

@@ -6,17 +6,21 @@ import io
 import os
 import sys
 
-from . import errors
+from . import errors, visit
+
+def write(term, Formatter):
+    formatter = Formatter()
+    visit.visit(term, formatter)
+    formatter.finish()
 
 def get(package, module_name, attribute_name):
     return getattr(importlib.import_module(package + '.' + module_name),
                     attribute_name)
 
-def interpret(package, source, output, error):
+def interpret(package, source, Formatter, error):
     lex      = get(package, 'lexer',     'lex')
     parse    = get(package, 'parser',    'parse')
     evaluate = get(package, 'evaluator', 'evaluate')
-    write    = get(package, 'writer',    'write')
 
     tokens = lex(source)
     try:
@@ -25,13 +29,12 @@ def interpret(package, source, output, error):
         print(e.args[0], file=error)
         return -1
     result = evaluate(term)
-    write(output, result)
+    write(result, Formatter)
 
-def repl(package, getline, output, error):
+def repl(package, getline, Formatter, error):
     lex      = get(package, 'lexer',     'lex')
     parse    = get(package, 'parser',    'parse')
     evaluate = get(package, 'evaluator', 'evaluate')
-    write    = get(package, 'writer',    'write')
 
     while True:
         try:
@@ -44,15 +47,15 @@ def repl(package, getline, output, error):
                 except errors.IncompleteParseError:
                     line = line + getline('. ') + '\n'
             result = evaluate(term)
-            write(output, result)
+            write(result, Formatter)
         except errors.ParserError as e:
             print('Error:', e.args[0], file=error)
             continue
         except KeyboardInterrupt:
-            output.write('\n')
+            Formatter().finish()
             break
         except EOFError:
-            output.write('\n')
+            Formatter().finish()
             break
 
 def main():
@@ -69,9 +72,11 @@ def main():
         print('Unknown interpreter: ' + args.interpreter, file=sys.stderr)
         return -1
 
+    Formatter = get(package, 'formatters', 'TextFormatter')
+
     if args.input is None and args.output is None:
         import readline
-        return repl(package, input, sys.stdout, sys.stderr)
+        return repl(package, input, lambda: Formatter(sys.stdout), sys.stderr)
 
     if args.input == '-' or args.input is None:
         infile = sys.stdin
@@ -83,7 +88,7 @@ def main():
     else:
         outfile = open(args.output)
 
-    return interpret(package, infile, outfile, sys.stderr)
+    return interpret(package, infile, lambda: Formatter(outfile), sys.stderr)
 
 if __name__ == '__main__':
     sys.exit(main())
