@@ -9,6 +9,9 @@ def visit(term, visitor):
         acceptor = visitor._acceptors.get((type(term), field), None)
         if acceptor is not None:
             accumulator = acceptor(visitor, result)
+    acceptor = visitor._acceptors.get((type(term), None), None)
+    if acceptor is not None:
+        accumulator = acceptor(visitor, result)
     return accumulator
 
 def visitor(cls):
