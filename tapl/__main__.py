@@ -1,5 +1,6 @@
 # tapl.__main__
 
+import argparse
 import importlib
 import io
 import os
@@ -7,66 +8,83 @@ import sys
 
 from . import errors
 
-def interpret(interpreter, source, output, error):
-    tokens = interpreter.lex(source)
+def get(package, module_name, attribute_name):
+    return getattr(importlib.import_module(package + '.' + module_name),
+                    attribute_name)
+
+def interpret(package, source, output, error):
+    lex      = get(package, 'lexer',     'lex')
+    parse    = get(package, 'parser',    'parse')
+    evaluate = get(package, 'evaluator', 'evaluate')
+    write    = get(package, 'writer',    'write')
+
+    tokens = lex(source)
     try:
-        term = interpreter.parse(tokens)
+        term = parse(tokens)
     except errors.ParserError as e:
         print(e.args[0], file=error)
         return -1
-    result = interpreter.evaluate(term)
-    interpreter.write(output, result)
+    result = evaluate(term)
+    write(output, result)
 
-def repl(interpreter, getline, output, error):
+def repl(package, getline, output, error):
+    lex      = get(package, 'lexer',     'lex')
+    parse    = get(package, 'parser',    'parse')
+    evaluate = get(package, 'evaluator', 'evaluate')
+    write    = get(package, 'writer',    'write')
+
     while True:
         try:
             line = getline('> ') + '\n'
             while True:
-                tokens = interpreter.lex(io.StringIO(line))
+                tokens = lex(io.StringIO(line))
                 try:
-                    term = interpreter.parse(tokens)
+                    term = parse(tokens)
                     break
                 except errors.IncompleteParseError:
                     line = line + getline('. ') + '\n'
-            result = interpreter.evaluate(term)
-            interpreter.write(output, result)
+            result = evaluate(term)
+            write(output, result)
         except errors.ParserError as e:
             print('Error:', e.args[0], file=error)
             continue
         except KeyboardInterrupt:
-            print('', file=output)
+            output.write('\n')
             break
         except EOFError:
-            print('', file=output)
+            output.write('\n')
             break
 
-def load_interpreter(name):
-    return importlib.import_module('tapl.' + name)
-
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('interpreter', nargs='?', default=os.path.basename(sys.argv[0]))
+    parser.add_argument('-i', '--input',  type=str)
+    parser.add_argument('-o', '--output', type=str)
+    args = parser.parse_args()
+
+    package = 'tapl.' + args.interpreter
     try:
-        interpreter_name = os.path.basename(sys.argv[0])
-        module           = load_interpreter(interpreter_name)
-    except ImportError:
-        try:
-            interpreter_name = sys.argv.pop(1)
-            module           = load_interpreter(interpreter_name)
-        except ImportError:
-            print('No interpreter named ' + interpreter_name, file=sys.stderr)
-            sys.exit(-1)
+        importlib.import_module(package)
+    except ImportError as e:
+        print('Unknown interpreter: ' + args.interpreter, file=sys.stderr)
+        return -1
 
-    interpreter = module.Interpreter()
-
-    if len(sys.argv) == 1:
+    if args.input is None and args.output is None:
         import readline
-        repl(interpreter, input, sys.stdout, sys.stderr)
-    elif len(sys.argv) == 2:
-        if sys.argv[1] == '-':
-            source = sys.stdin
-        else:
-            source = open(sys.argv[1])
-        sys.exit(interpret(interpreter, source, sys.stdout, sys.stderr))
+        return repl(package, input, sys.stdout, sys.stderr)
+
+    if args.input == '-' or args.input is None:
+        infile = sys.stdin
+    else:
+        infile = open(args.input)
+
+    if args.output == '-' or args.output is None:
+        outfile = sys.stdout
+    else:
+        outfile = open(args.output)
+
+    return interpret(package, infile, outfile, sys.stderr)
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
 
