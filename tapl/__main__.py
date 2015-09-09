@@ -15,7 +15,7 @@ def interpret(interpreter, source, output, error):
         print(e.args[0], file=error)
         return -1
     result = interpreter.evaluate(term)
-    interpreter.print(output, result)
+    interpreter.write(output, result)
 
 def repl(interpreter, getline, output, error):
     while True:
@@ -29,7 +29,7 @@ def repl(interpreter, getline, output, error):
                 except errors.IncompleteParseError:
                     line = line + getline('. ') + '\n'
             result = interpreter.evaluate(term)
-            interpreter.print(output, result)
+            interpreter.write(output, result)
         except errors.ParserError as e:
             print('Error:', e.args[0], file=error)
             continue

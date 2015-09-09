@@ -3,7 +3,7 @@
 from . import evaluator
 from . import lexer
 from . import parser
-from . import printer
+from . import writer
 
 class Interpreter:
     @classmethod
@@ -19,6 +19,6 @@ class Interpreter:
         return evaluator.evaluate(term)
 
     @classmethod
-    def print(self, file, term):
-        return printer.print(file, term)
+    def write(self, file, term):
+        return writer.write(file, term)
 

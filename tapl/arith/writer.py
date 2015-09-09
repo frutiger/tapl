@@ -1,4 +1,4 @@
-# tapl.arith.printer
+# tapl.arith.writer
 
 from . import terms
 
@@ -22,6 +22,6 @@ def format_term(term):
     else:
         raise RuntimeError('Unknown term: {}'.format(term))
 
-def print(file, term):
+def write(file, term):
     file.write(format_term(term) + '\n')
 
