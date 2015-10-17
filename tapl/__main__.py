@@ -17,10 +17,9 @@ def get(package, module_name, attribute_name):
     return getattr(importlib.import_module(package + '.' + module_name),
                     attribute_name)
 
-def interpret(package, source, Formatter, error):
+def interpret(package, source, Formatter, error, should_eval):
     lex      = get(package, 'lexer',     'lex')
     parse    = get(package, 'parser',    'parse')
-    evaluate = get(package, 'evaluator', 'evaluate')
 
     tokens = lex(source)
     try:
@@ -28,8 +27,11 @@ def interpret(package, source, Formatter, error):
     except errors.ParserError as e:
         print(e.args[0], file=error)
         return -1
-    result = evaluate(term)
-    write(result, Formatter)
+
+    if should_eval:
+        evaluate = get(package, 'evaluator', 'evaluate')
+        term = evaluate(term)
+    write(term, Formatter)
 
 def repl(package, getline, Formatter, error):
     lex      = get(package, 'lexer',     'lex')
@@ -64,6 +66,7 @@ def main():
     parser.add_argument('-i', '--input',  type=str)
     parser.add_argument('-o', '--output', type=str)
     parser.add_argument('-f', '--format', default='text')
+    parser.add_argument('-n', '--no-evaluate', action='store_true')
     args = parser.parse_args()
 
     package = 'tapl.' + args.interpreter
@@ -90,7 +93,11 @@ def main():
     else:
         outfile = open(args.output)
 
-    return interpret(package, infile, lambda: Formatter(outfile), sys.stderr)
+    return interpret(package,
+                     infile,
+                     lambda: Formatter(outfile),
+                     sys.stderr,
+                     not args.no_evaluate)
 
 if __name__ == '__main__':
     sys.exit(main())
