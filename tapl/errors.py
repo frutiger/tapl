@@ -4,5 +4,6 @@ class ParserError(RuntimeError):
     pass
 
 class IncompleteParseError(ParserError):
-    pass
+    def __init__(self):
+        ParserError.__init__(self, 'Unexpected end of input')
 

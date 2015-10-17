@@ -14,7 +14,7 @@ def parse(tokens):
         try:
             return next(tokens)
         except StopIteration:
-            raise errors.IncompleteParseError('Unexpected end of input')
+            raise errors.IncompleteParseError()
 
     def parse_if(tokens):
         def expect(tokens, value):
