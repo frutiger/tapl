@@ -1,31 +1,23 @@
 # tapl.arith.lexer
 
-from collections import namedtuple
+import re
 
-Location = namedtuple('Location', ['line', 'column'])
+from .. import relexer
 
 def lex(source):
-    location      = Location(1, 1)
-    token_start   = None
-    token         = None
-    while True:
-        char = source.read(1)
-        if not char:
-            break
+    whitespace  = {' ', '\n'}
+    token_types = {
+        'TRUE':   re.compile('^true$'),
+        'FALSE':  re.compile('^false$'),
+        'ZERO':   re.compile('^zero$'),
+        'ISZERO': re.compile('^iszero$'),
+        'SUCC':   re.compile('^succ$'),
+        'PRED':   re.compile('^pred$'),
+        'IF':     re.compile('^if$'),
+        'THEN':   re.compile('^then$'),
+        'ELSE':   re.compile('^else$'),
+    }
 
-        if char == ' ' or char == '\n':
-            if token:
-                yield (token_start, token)
-                token = None
-        else:
-            if not token:
-                token_start = Location(location.line, location.column)
-                token       = char
-            else:
-                token += char
-
-        if char == '\n':
-            location = Location(location.line + 1, 1)
-        else:
-            location = Location(location.line, location.column + 1)
+    lexer = relexer.ReLexer(whitespace, token_types)
+    return lexer.lex(source)
 
