@@ -6,11 +6,12 @@ import io
 import os
 import sys
 
-from . import errors, visit
+from .visit   import visit
+from . import errors
 
 def write(term, Formatter):
     formatter = Formatter()
-    visit.visit(term, formatter)
+    visit(term, formatter)
     formatter.finish()
 
 def get(package, module_name, attribute_name):
