@@ -6,6 +6,7 @@ import io
 import os
 import sys
 
+from .relexer import UnknownToken
 from .visit   import visit
 from . import errors
 
@@ -25,6 +26,9 @@ def interpret(package, source, Formatter, error, should_eval):
     tokens = lex(source)
     try:
         term = parse(tokens)
+    except UnknownToken as e:
+        print(e.args[0], file=error)
+        return -1
     except errors.ParserError as e:
         print(e.args[0], file=error)
         return -1

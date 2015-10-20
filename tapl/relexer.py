@@ -5,8 +5,12 @@ from collections import namedtuple
 Location = namedtuple('Location', ['line', 'column'])
 
 class UnknownToken(Exception):
-    def __init__(self, token):
-        Exception.__init__(self, 'Unknown token: ' + token)
+    def __init__(self, location, token):
+        Exception.__init__(self,
+                          'Unknown token: {} (at {}:{})'.format(
+                                                              token,
+                                                              location.line,
+                                                              location.column))
 
 def bump_location(char, location):
     if char == '\n':
@@ -19,15 +23,15 @@ class ReLexer:
         self._whitespace  = whitespace
         self._token_types = token_types
 
-    def _token_type(self, token):
+    def _token_type(self, location, token):
         for token_type, regex in self._token_types.items():
             if regex.match(token):
                 return token_type
-        raise UnknownToken(token)
+        raise UnknownToken(location, token)
 
     def _valid_token(self, token):
         try:
-            self._token_type(token)
+            self._token_type(Location(0, 0), token)
             return True
         except UnknownToken:
             return False
@@ -49,7 +53,7 @@ class ReLexer:
                 if not self._valid_token(token_so_far + char) and \
                                                self._valid_token(token_so_far):
                     yield (token_start,
-                           self._token_type(token_so_far),
+                           self._token_type(token_start, token_so_far),
                            token_so_far)
                     token_start  = location
                     token_so_far = char
@@ -60,10 +64,10 @@ class ReLexer:
                     assert(token_so_far)
 
                     if not self._valid_token(token_so_far):
-                        raise UnknownToken(token_so_far)
+                        raise UnknownToken(token_start, token_so_far)
 
                     yield (token_start,
-                           self._token_type(token_so_far),
+                           self._token_type(token_start, token_so_far),
                            token_so_far)
 
                 token_start  = None
