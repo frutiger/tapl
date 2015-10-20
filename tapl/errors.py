@@ -1,6 +1,6 @@
 # tapl.errors
 
-class ParserError(RuntimeError):
+class ParserError(Exception):
     pass
 
 class IncompleteParseError(ParserError):
