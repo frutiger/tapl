@@ -7,7 +7,7 @@ Location = namedtuple('Location', ['line', 'column'])
 class UnknownToken(Exception):
     def __init__(self, location, token):
         Exception.__init__(self,
-                          'Unknown token: {} (at {}:{})'.format(
+                          'Unknown token "{}" (at {}:{})'.format(
                                                               token,
                                                               location.line,
                                                               location.column))
@@ -74,6 +74,6 @@ class ReLexer:
                 token_so_far = ''
 
                 if not char:
-                    yield (None, '$', None)
+                    yield (location, '$', None)
                     break
 

@@ -6,9 +6,9 @@ import io
 import os
 import sys
 
-from .relexer import UnknownToken
-from .visit   import visit
-from . import errors
+from .relexer  import UnknownToken
+from .lrparser import IncompleteParseError, ParserError
+from .visit    import visit
 
 def write(term, Formatter):
     formatter = Formatter()
@@ -29,8 +29,8 @@ def interpret(package, source, Formatter, error, should_eval):
     except UnknownToken as e:
         print(e.args[0], file=error)
         return -1
-    except errors.ParserError as e:
-        print(e.args[0], file=error)
+    except (IncompleteParseError, ParserError) as e:
+        print('Error:', e.args[0], file=error)
         return -1
 
     if should_eval:
@@ -51,11 +51,11 @@ def repl(package, getline, Formatter, error):
                 try:
                     term = parse(tokens)
                     break
-                except errors.IncompleteParseError:
+                except IncompleteParseError:
                     line = line + getline('. ') + '\n'
             result = evaluate(term)
             write(result, Formatter)
-        except errors.ParserError as e:
+        except ParserError as e:
             print('Error:', e.args[0], file=error)
             continue
         except KeyboardInterrupt:

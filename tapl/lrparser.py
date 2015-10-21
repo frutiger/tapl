@@ -1,6 +1,19 @@
 # tapl.lrparser
 
-from . import errors
+class ParserError(Exception):
+    def __init__(self, location, token):
+        Exception.__init__(self,
+                          'Unexpected token "{}" (at {}:{})'.format(
+                                                              token,
+                                                              location.line,
+                                                              location.column))
+
+class IncompleteParseError(Exception):
+    def __init__(self, location):
+        Exception.__init__(self,
+                          'Unexpected end of input (at {}:{})'.format(
+                                                              location.line,
+                                                              location.column))
 
 class LRParser:
     def __init__(self, acceptance, shifts, reductions, gotos):
@@ -46,10 +59,7 @@ class LRParser:
             elif (state, token_type) in self._reductions:
                 self._reduce(self._reductions[(state, token_type)])
             elif token_type == '$':
-                raise errors.IncompleteParseError()
+                raise IncompleteParseError(location)
             else:
-                raise errors.ParserError('Unexpected token "{}" (at {}:{})'
-                                         .format(token,
-                                                 location.line,
-                                                 location.column))
+                raise ParserError(token, location)
 
