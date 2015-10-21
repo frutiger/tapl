@@ -55,8 +55,8 @@ def repl(package, getline, Formatter, error):
                     line = line + getline('. ') + '\n'
             result = evaluate(term)
             write(result, Formatter)
-        except ParserError as e:
-            print('Error:', e.args[0], file=error)
+        except (UnknownToken, ParserError) as e:
+            print(e.args[0], file=error)
             continue
         except KeyboardInterrupt:
             Formatter().finish()

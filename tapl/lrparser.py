@@ -61,5 +61,5 @@ class LRParser:
             elif token_type == '$':
                 raise IncompleteParseError(location)
             else:
-                raise ParserError(token, location)
+                raise ParserError(location, token)
 
