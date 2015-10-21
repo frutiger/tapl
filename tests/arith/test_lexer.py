@@ -10,12 +10,12 @@ def l(line, column):
     return Location(line, column)
 
 lexer = ReLexer(WHITESPACE, TOKEN_TYPES)
-def lex(source):
-    return lexer.lex(source)
+def lex(text):
+    return lexer.lex(StringIO(text))
 
 class If(TestCase):
     def test(self):
-        ts = list(lex(StringIO('if')))
+        ts = list(lex('if'))
         assert(2 == len(ts))
 
         t = ts[0]
