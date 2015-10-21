@@ -6,8 +6,8 @@ import io
 import os
 import sys
 
-from .relexer  import UnknownToken
-from .lrparser import IncompleteParseError, ParserError
+from .relexer  import ReLexer, UnknownToken
+from .lrparser import LRParser, IncompleteParseError, ParserError
 from .visit    import visit
 
 def write(term, Formatter):
@@ -20,16 +20,18 @@ def get(package, module_name, attribute_name):
                     attribute_name)
 
 def interpret(package, source, Formatter, error, should_eval):
-    lex      = get(package, 'lexer',     'lex')
-    parse    = get(package, 'parser',    'parse')
+    lexer = ReLexer(get(package, 'token_regexes', 'WHITESPACE'),
+                    get(package, 'token_regexes', 'TOKEN_TYPES'))
+    parser = LRParser(get(package, 'lr_table', 'ACCEPTANCE'),
+                      get(package, 'lr_table', 'SHIFTS'),
+                      get(package, 'lr_table', 'REDUCTIONS'),
+                      get(package, 'lr_table', 'GOTOS'))
+    from_concrete = get(package, 'terms', 'from_concrete')
 
-    tokens = lex(source)
+    tokens = lexer.lex(source)
     try:
-        term = parse(tokens)
-    except UnknownToken as e:
-        print(e.args[0], file=error)
-        return -1
-    except (IncompleteParseError, ParserError) as e:
+        term = from_concrete(parser.parse(tokens))
+    except (UnknownToken, IncompleteParseError, ParserError) as e:
         print('Error:', e.args[0], file=error)
         return -1
 
@@ -39,17 +41,22 @@ def interpret(package, source, Formatter, error, should_eval):
     write(term, Formatter)
 
 def repl(package, getline, Formatter, error):
-    lex      = get(package, 'lexer',     'lex')
-    parse    = get(package, 'parser',    'parse')
+    lexer = ReLexer(get(package, 'token_regexes', 'WHITESPACE'),
+                    get(package, 'token_regexes', 'TOKEN_TYPES'))
+    from_concrete = get(package, 'terms', 'from_concrete')
     evaluate = get(package, 'evaluator', 'evaluate')
 
     while True:
         try:
             line = getline('> ') + '\n'
             while True:
-                tokens = lex(io.StringIO(line))
+                tokens = lexer.lex(io.StringIO(line))
                 try:
-                    term = parse(tokens)
+                    parser = LRParser(get(package, 'lr_table', 'ACCEPTANCE'),
+                                      get(package, 'lr_table', 'SHIFTS'),
+                                      get(package, 'lr_table', 'REDUCTIONS'),
+                                      get(package, 'lr_table', 'GOTOS'))
+                    term = from_concrete(parser.parse(tokens))
                     break
                 except IncompleteParseError:
                     line = line + getline('. ') + '\n'
