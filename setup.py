@@ -8,8 +8,9 @@ setup(name='tapl',
       url='https://github.com/frutiger/tapl',
       author='Masud Rahman',
       license='MIT',
-      packages=['tapl', 'tapl/arith'],
+      packages=['tapl', 'tapl/arith', 'tapl/untyped'],
       entry_points={
-          'console_scripts': ['arith=tapl.__main__:main'],
+          'console_scripts': ['arith=tapl.__main__:main',
+                              'untyped=tapl.__main__:main'],
       })
 
