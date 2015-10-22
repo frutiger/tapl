@@ -2,6 +2,8 @@
 
 from collections import namedtuple
 
+from ..lrparser import ParserError
+
 from . import concrete
 
 Variable    = namedtuple('Variable',    ['location', 'binder'])
@@ -16,6 +18,9 @@ def from_concrete(term, context=None):
         context = []
 
     if isinstance(term, concrete.Variable):
+        if term.id not in context:
+            raise ParserError(term.location,
+                             'Unknown variable "{}"'.format(term.id))
         return Variable(term.location, context.index(term.id))
     elif isinstance(term, concrete.Abstraction):
         return Abstraction(term.location,
