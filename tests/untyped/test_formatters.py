@@ -24,16 +24,16 @@ def text(t):
 
 class IdentityAsText(TestCase):
     def test(self):
-        t = abst('x', var(0))
-        assert('(\u03bbx.x)' == text(t))
+        t = abst(u'x', var(0))
+        assert(u'(\u03bbx.x)' == text(t))
 
 class SelfApplAsText(TestCase):
     def test(self):
-        t = abst('x', app(var(0), var(0)))
-        assert('(\u03bbx.(x x))' == text(t))
+        t = abst(u'x', app(var(0), var(0)))
+        assert(u'(\u03bbx.(x x))' == text(t))
 
 class SelfApplApplAsText(TestCase):
     def test(self):
-        t = abst('x', app(app(var(0), var(0)), var(0)))
-        assert('(\u03bbx.((x x) x))' == text(t))
+        t = abst(u'x', app(app(var(0), var(0)), var(0)))
+        assert(u'(\u03bbx.((x x) x))' == text(t))
 
