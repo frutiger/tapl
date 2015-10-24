@@ -1,4 +1,5 @@
 # tapl.arith.lr_table
+# coding=UTF-8
 
 from . import concrete
 
