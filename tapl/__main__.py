@@ -1,8 +1,11 @@
 # tapl.__main__
 
+from __future__ import print_function
+
 import argparse
 import importlib
 import io
+import locale
 import os
 import sys
 
@@ -10,17 +13,23 @@ from .driver   import lex, parse, evaluate, write, flush
 from .relexer  import UnknownToken
 from .lrparser import IncompleteParseError, ParserError
 
+def getline(*args):
+    try:
+        return raw_input(*args).decode(locale.getpreferredencoding(True))
+    except NameError:
+        return input(*args)
+
 def repl(interpreter_name, formatter_name):
     while True:
         try:
-            line = input('> ') + '\n'
+            line = getline('> ') + '\n'
             while True:
                 try:
                     tokens = lex(interpreter_name, io.StringIO(line))
                     term   = parse(interpreter_name, tokens)
                     break
                 except IncompleteParseError:
-                    line = line + input('. ') + '\n'
+                    line = line + getline('. ') + '\n'
             term = evaluate(interpreter_name, term)
             write(interpreter_name, term, formatter_name, sys.stdout)
         except (UnknownToken, ParserError) as e:
