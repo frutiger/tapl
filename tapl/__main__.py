@@ -6,94 +6,52 @@ import io
 import os
 import sys
 
-from .relexer  import ReLexer, UnknownToken
-from .lrparser import LRParser, IncompleteParseError, ParserError
-from .visit    import visit
+from .driver   import lex, parse, evaluate, write, flush
+from .relexer  import UnknownToken
+from .lrparser import IncompleteParseError, ParserError
 
-def write(term, Formatter):
-    formatter = Formatter()
-    visit(term, formatter)
-    formatter.finish()
-
-def get(package, module_name, attribute_name):
-    return getattr(importlib.import_module(package + '.' + module_name),
-                    attribute_name)
-
-def interpret(package, source, Formatter, error, should_eval):
-    lexer = ReLexer(get(package, 'token_regexes', 'WHITESPACE'),
-                    get(package, 'token_regexes', 'TOKEN_TYPES'))
-    parser = LRParser(get(package, 'lr_table', 'ACCEPTANCE'),
-                      get(package, 'lr_table', 'SHIFTS'),
-                      get(package, 'lr_table', 'REDUCTIONS'),
-                      get(package, 'lr_table', 'GOTOS'))
-    from_concrete = get(package, 'terms', 'from_concrete')
-
-    tokens = lexer.lex(source)
-    try:
-        term = from_concrete(parser.parse(tokens))
-    except (UnknownToken, IncompleteParseError, ParserError) as e:
-        print('Error:', e.args[0], file=error)
-        return -1
-
-    if should_eval:
-        evaluate = get(package, 'evaluator', 'evaluate')
-        term = evaluate(term)
-    write(term, Formatter)
-
-def repl(package, getline, Formatter, error):
-    lexer = ReLexer(get(package, 'token_regexes', 'WHITESPACE'),
-                    get(package, 'token_regexes', 'TOKEN_TYPES'))
-    from_concrete = get(package, 'terms', 'from_concrete')
-    evaluate = get(package, 'evaluator', 'evaluate')
-
+def repl(interpreter_name, formatter_name):
     while True:
         try:
-            line = getline('> ') + '\n'
+            line = input('> ') + '\n'
             while True:
-                tokens = lexer.lex(io.StringIO(line))
                 try:
-                    parser = LRParser(get(package, 'lr_table', 'ACCEPTANCE'),
-                                      get(package, 'lr_table', 'SHIFTS'),
-                                      get(package, 'lr_table', 'REDUCTIONS'),
-                                      get(package, 'lr_table', 'GOTOS'))
-                    term = from_concrete(parser.parse(tokens))
+                    tokens = lex(interpreter_name, io.StringIO(line))
+                    term   = parse(interpreter_name, tokens)
                     break
                 except IncompleteParseError:
-                    line = line + getline('. ') + '\n'
-            result = evaluate(term)
-            write(result, Formatter)
+                    line = line + input('. ') + '\n'
+            term = evaluate(interpreter_name, term)
+            write(interpreter_name, term, formatter_name, sys.stdout)
         except (UnknownToken, ParserError) as e:
-            print(e.args[0], file=error)
+            print(e.args[0], file=sys.stderr)
             continue
-        except KeyboardInterrupt:
-            Formatter().finish()
-            break
-        except EOFError:
-            Formatter().finish()
+        except (KeyboardInterrupt, EOFError):
+            flush(interpreter_name, formatter_name, sys.stdout)
             break
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('interpreter', nargs='?', default=os.path.basename(sys.argv[0]))
+    parser.add_argument('interpreter',
+                         nargs='?', default=os.path.basename(sys.argv[0]))
     parser.add_argument('-i', '--input',  type=str)
     parser.add_argument('-o', '--output', type=str)
     parser.add_argument('-f', '--format', default='text')
     parser.add_argument('-n', '--no-evaluate', action='store_true')
     args = parser.parse_args()
 
-    package = 'tapl.' + args.interpreter
     try:
-        importlib.import_module(package)
+        importlib.import_module('tapl.' + args.interpreter)
     except ImportError as e:
         print('Unknown interpreter: ' + args.interpreter, file=sys.stderr)
         return -1
 
+    interpreter_name = args.interpreter
     formatter_name = args.format[0].upper() + args.format[1:] + 'Formatter'
-    Formatter = get(package, 'formatters', formatter_name)
 
     if args.input is None and args.output is None:
         import readline
-        return repl(package, input, lambda: Formatter(sys.stdout), sys.stderr)
+        return repl(args.interpreter, formatter_name)
 
     if args.input == '-' or args.input is None:
         infile = sys.stdin
@@ -105,11 +63,15 @@ def main():
     else:
         outfile = open(args.output)
 
-    return interpret(package,
-                     infile,
-                     lambda: Formatter(outfile),
-                     sys.stderr,
-                     not args.no_evaluate)
+    try:
+        tokens = lex(interpreter_name, infile)
+        term   = parse(interpreter_name, tokens)
+        if not args.no_evaluate:
+            term = evaluate(interpreter_name, term)
+        write(interpreter_name, term, formatter_name, outfile)
+    except (UnknownToken, IncompleteParseError, ParserError) as e:
+        print(e.args[0], file=sys.stderr)
+        return -1
 
 if __name__ == '__main__':
     sys.exit(main())
