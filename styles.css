@@ -1,0 +1,54 @@
+#repl * {
+    font-family: Monaco, Inconsolata, monospace;
+}
+
+* {
+    font-family: serif;
+}
+
+h1 * {
+    font-family: sans;
+}
+
+.error {
+    color: red;
+}
+
+html, body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: row;
+    width: 800px;
+}
+
+#preamble {
+    padding: 10px;
+    background: #ddd;
+}
+
+#repl {
+    padding: 10px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#results {
+    height: 200px;
+    overflow: scroll;
+    flex-grow: 1;
+    width: 100%;
+    padding: 10px;
+}
+
+#input {
+    width: 100%;
+}
+

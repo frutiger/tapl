@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+
+<head>
+<title>Interpreters of TAPL</title>
+<script src='https://sdk.amazonaws.com/js/aws-sdk-2.2.11.min.js'></script>
+<script src='tapl.js'></script>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+<div id="preamble">
+    <h1><a href="https://github.com/frutiger/tapl">
+        TAPL Interpreters
+    </a></h1>
+    Interpreters for languages presented in <em>TAPL</em><sup>1</sup>.  Full
+    source code is at
+    <a href="https://github.com/frutiger/tapl">frutiger/tapl</a></h1>.
+    Interpreters as part of this project:
+    <ul>
+        <li><a href="javascript:setInterpreter('arith');">arith</a></li>
+        <li><a href="javascript:setInterpreter('untyped');">untyped</a></li>
+    </ul>
+    <sup>1</sup>B. C. Pierce, <em>Types and Programming Languages</em>,
+    Cambridge, MA, MIT Press, 2002.
+</div>
+<div id="repl">
+    <div id="results"></div>
+    <input id="input" placeholder="Expression" autofocus="true">
+</div>
+</body>
+
+<script>setInterpreter(); hookupEvents();</script>
+</html>
