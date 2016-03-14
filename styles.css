@@ -1,5 +1,5 @@
 #repl * {
-    font-family: Monaco, Inconsolata, monospace;
+    font-family: monospace;
 }
 
 * {
@@ -7,7 +7,7 @@
 }
 
 h1 * {
-    font-family: sans;
+    font-family: sans-serif;
 }
 
 .error {
