@@ -56,6 +56,7 @@ function setInterpreter(name) {
     interpreter = name;
     addContent('Current language: ' + interpreter + '\n');
     document.getElementById('input').focus();
+    document.getElementById('rules').src = 'syntax/' + name + '.html';
 }
 
 function getInterpreterHistory() {

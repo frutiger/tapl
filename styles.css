@@ -29,7 +29,8 @@ html, body {
 #preamble {
     padding: 10px;
     background: #ddd;
-    width: 500px;
+    display: flex;
+    flex-direction: column;
 }
 
 #repl {
@@ -51,5 +52,31 @@ html, body {
 
 #input {
     width: 100%;
+}
+
+#rules {
+    flex-grow: 1;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+hr {
+    background-color: black;
+    height: 1px;
+    width: 100%;
+}
+
+.rules-heading {
+    font-weight: bold;
+}
+
+.syntax-metavar {
+    font-style: italic;
+}
+
+.syntax-keyword {
+    font-family: monospace;
+    font-weight: bold;
 }
 
