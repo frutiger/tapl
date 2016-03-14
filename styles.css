@@ -42,7 +42,7 @@ body {
 
 #results {
     height: 200px;
-    overflow: scroll;
+    overflow-y: auto;
     flex-grow: 1;
     width: 100%;
     padding: 10px;
