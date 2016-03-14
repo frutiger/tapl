@@ -23,13 +23,13 @@ html, body {
 #content {
     display: flex;
     flex-direction: row;
-    width: 800px;
     height: 100%;
 }
 
 #preamble {
     padding: 10px;
     background: #ddd;
+    width: 500px;
 }
 
 #repl {
