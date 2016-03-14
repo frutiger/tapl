@@ -52,18 +52,40 @@ function addContent(content, isError) {
 }
 
 var interpreter;
-function setInterpreter(hash) {
-    interpreter = hash || window.location.hash.slice(1) || 'untyped';
+function setInterpreter(name) {
+    interpreter = name;
     addContent('Current language: ' + interpreter + '\n');
     document.getElementById('input').focus();
 }
 
-function onInputChange() {
+function getInterpreterHistory() {
+    var history = JSON.parse(window.localStorage.getItem('lineHistory'));
+    if (!history[interpreter]) {
+        history[interpreter] = [''];
+    }
+    window.localStorage.setItem('lineHistory', JSON.stringify(history));
+    return history[interpreter];
+}
+
+function setInterpreterHistory(interpreterHistory) {
+    var history = JSON.parse(window.localStorage.getItem('lineHistory'));
+    history[interpreter] = interpreterHistory;
+    window.localStorage.setItem('lineHistory', JSON.stringify(history));
+}
+
+function appendToHistory(input) {
+    var history = getInterpreterHistory();
+    history.splice(1, null, input);
+    setInterpreterHistory(history);
+}
+
+function execute() {
     var results = document.getElementById('results');
     var elem    = document.getElementById('input');
 
     elem.readOnly = true;
     addContent('> ' + elem.value + '\n');
+    appendToHistory(elem.value);
     run(interpreter, elem.value, function (error, result) {
         addContent(error || result, !!error);
         elem.value    = '';
@@ -71,8 +93,49 @@ function onInputChange() {
     });
 }
 
-function hookupEvents() {
-    document.getElementById('input').addEventListener('change', function (e) {
-        onInputChange();
-    });
+function initHistory() {
+    var history = window.localStorage.getItem('lineHistory');
+    if (!history) {
+        window.localStorage.clear();
+        window.localStorage.setItem('lineHistory', JSON.stringify({}));
+    }
 }
+
+var historyCursor = 0;
+function onInputKeydown(e) {
+    var history = getInterpreterHistory();
+
+    switch (e.code) {
+      case 'ArrowUp': {
+        ++historyCursor;
+      } break;
+
+      case 'ArrowDown': {
+        --historyCursor;
+      } break;
+
+      case 'Enter': {
+        execute();
+      } break;
+
+      default:
+        return;
+    }
+
+    if (historyCursor < 0) {
+        historyCursor = 0;
+    }
+
+    if (historyCursor > (history.length - 1)) {
+        historyCursor = history.length - 1;
+    }
+
+    var input = document.getElementById('input');
+    input.value = history[historyCursor];
+}
+
+function hookupEvents() {
+    var input = document.getElementById('input');
+    input.addEventListener('keydown', onInputKeydown);
+}
+
