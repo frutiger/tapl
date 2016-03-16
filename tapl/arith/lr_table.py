@@ -6,13 +6,13 @@ from . import concrete
 # Given a grammar with the following production rules:
 #
 # r0. Goal -> Term
-# r2. Term -> ZERO
-# r3. Term -> SUCC Term
-# r4. Term -> PRED Term
-# r6. Term -> TRUE
-# r7. Term -> FALSE
-# r8. Term -> ISZERO Term
-# r9. Term -> IF Term THEN Term ELSE Term
+# r1. Term -> ZERO
+# r2. Term -> SUCC Term
+# r3. Term -> PRED Term
+# r4. Term -> TRUE
+# r6. Term -> FALSE
+# r7. Term -> ISZERO Term
+# r8. Term -> IF Term THEN Term ELSE Term
 #
 # We can produce the following item sets, along with their transitions:
 #
@@ -90,21 +90,21 @@ from . import concrete
 # |----|----|----|----|----|----|----|-----|-----|-----|-----|----|
 # |  0 | s2 | s3 | s4 | s5 | s6 | s7 |  s8 |     |     |     |  1 |
 # |  1 |    |    |    |    |    |    |     |     |     | acc |    |
-# |  2 | r2 | r2 | r2 | r2 | r2 | r2 |  r2 |  r2 |  r2 |  r2 |    |
+# |  2 | r1 | r1 | r1 | r1 | r1 | r1 |  r1 |  r1 |  r1 |  r1 |    |
 # |  3 | s2 | s3 | s4 | s5 | s6 | s7 |  s8 |     |     |     |  9 |
 # |  4 | s2 | s3 | s4 | s5 | s6 | s7 |  s8 |     |     |     | 10 |
-# |  5 | r6 | r6 | r6 | r6 | r6 | r6 |  r6 |  r6 |  r6 |  r6 |    |
-# |  6 | r7 | r7 | r7 | r7 | r7 | r7 |  r7 |  r7 |  r7 |  r7 |    |
+# |  5 | r4 | r4 | r4 | r4 | r4 | r4 |  r4 |  r4 |  r4 |  r4 |    |
+# |  6 | r6 | r6 | r6 | r6 | r6 | r6 |  r6 |  r6 |  r6 |  r6 |    |
 # |  7 | s2 | s3 | s4 | s5 | s6 | s7 |  s8 |     |     |     | 11 |
 # |  8 | s2 | s3 | s4 | s5 | s6 | s7 |  s8 |     |     |     | 12 |
-# |  9 | r3 | r3 | r3 | r3 | r3 | r3 |  r3 |  r3 |  r3 |  r3 |    |
-# | 10 | r4 | r4 | r4 | r4 | r4 | r4 |  r4 |  r4 |  r4 |  r4 |    |
-# | 11 | r8 | r8 | r8 | r8 | r8 | r8 |  r8 |  r8 |  r8 |  r8 |    |
+# |  9 | r2 | r2 | r2 | r2 | r2 | r2 |  r2 |  r2 |  r2 |  r2 |    |
+# | 10 | r3 | r3 | r3 | r3 | r3 | r3 |  r3 |  r3 |  r3 |  r3 |    |
+# | 11 | r7 | r7 | r7 | r7 | r7 | r7 |  r7 |  r7 |  r7 |  r7 |    |
 # | 12 |    |    |    |    |    |    |     | s13 |     |     |    |
 # | 13 | s2 | s3 | s4 | s5 | s6 | s7 |  s8 |     |     |     | 14 |
 # | 14 |    |    |    |    |    |    |     |     | s15 |     |    |
 # | 15 | s2 | s3 | s4 | s5 | s6 | s7 |  s8 |     |     |     | 16 |
-# | 16 | r9 | r9 | r9 | r9 | r9 | r9 |  r9 |  r9 |  r9 |  r9 |    |
+# | 16 | r8 | r8 | r8 | r8 | r8 | r8 |  r8 |  r8 |  r8 |  r8 |    |
 # |----|----|----|----|----|----|----|-----|-----|-----|-----|----|
 #
 
