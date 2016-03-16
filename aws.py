@@ -20,5 +20,5 @@ if __name__ == '__main__':
     print aws({
         'interpreter': sys.argv[1],
         'input': ' '.join(sys.argv[2:]),
-    }),
+    }, None)
 
