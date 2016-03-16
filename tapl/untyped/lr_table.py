@@ -100,21 +100,9 @@ SHIFTS = {
 }
 
 REDUCTIONS = {
-    (2,  'ID'):     concrete.Variable,
-    (2,  'LAMBDA'): concrete.Variable,
-    (2,  'LPAREN'): concrete.Variable,
-    (2,  'RPAREN'): concrete.Variable,
-    (2,  '$'):      concrete.Variable,
-    (5,  'ID'):     concrete.Application,
-    (5,  'LAMBDA'): concrete.Application,
-    (5,  'LPAREN'): concrete.Application,
-    (5,  'RPAREN'): concrete.Application,
-    (5,  '$'):      concrete.Application,
-    (7,  'ID'):     concrete.Parens,
-    (7,  'LAMBDA'): concrete.Parens,
-    (7,  'LPAREN'): concrete.Parens,
-    (7,  'RPAREN'): concrete.Parens,
-    (7,  '$'):      concrete.Parens,
+    2:              concrete.Variable,
+    5:              concrete.Application,
+    7:              concrete.Parens,
     (9,  'RPAREN'): concrete.Abstraction,
     (9,  '$'):      concrete.Abstraction,
 }
