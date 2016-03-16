@@ -24,9 +24,9 @@ from . import concrete
 #    [Term -> · LAMBDA ID Term]        3
 #    [Term -> · Term Term]             5
 #    [Term -> · LPAREN Term RPAREN]    4
-# 2. [Term -> i ·]
-# 3. [Term -> LAMBDA ·ID Term]         8
-# 4. [Term -> LPAREN ·Term RPAREN]     6
+# 2. [Term -> ID ·]
+# 3. [Term -> LAMBDA · ID Term]        8
+# 4. [Term -> LPAREN · Term RPAREN]    6
 #    [Term -> · ID]                    2
 #    [Term -> · LAMBDA ID Term]        3
 #    [Term -> · Term Term]             6
