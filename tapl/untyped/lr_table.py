@@ -5,11 +5,11 @@ from . import concrete
 
 # Given a grammar with the following production rules:
 #
-# Goal -> Term
-# Term -> ID
-# Term -> LAMBDA ID Term
-# Term -> Term Term
-# Term -> LPAREN Term RPAREN
+# r0. Goal -> Term
+# r1. Term -> ID
+# r2. Term -> LAMBDA ID Term
+# r3. Term -> Term Term
+# r4. Term -> LPAREN Term RPAREN
 #
 # We can produce the following item sets, along with their transitions:
 #
