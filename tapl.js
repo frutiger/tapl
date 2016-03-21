@@ -117,6 +117,7 @@ function onInputKeydown(e) {
 
       case 'Enter': {
         execute();
+        historyCursor = 0;
       } break;
 
       default:
