@@ -1,8 +1,6 @@
 # tapl.arith.table
 # coding: UTF-8
-
-from . import concrete
-
+#
 # Given a grammar with the following production rules:
 #
 # r0. § → Term $
@@ -168,14 +166,14 @@ table = {
         (15, 'IF'):      8,
     },
     'reductions': {
-         2: concrete.ZeroValue,
-         5: concrete.TrueValue,
-         6: concrete.FalseValue,
-         9: concrete.Succ,
-        10: concrete.Pred,
-        11: concrete.IsZero,
-        16: concrete.If,
-        17: concrete.Goal,
+         2: 1,
+         5: 4,
+         6: 5,
+         9: 2,
+        10: 3,
+        11: 6,
+        16: 7,
+        17: 0,
     },
     'gotos': {
          0:  1,

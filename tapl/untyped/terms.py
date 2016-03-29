@@ -1,8 +1,7 @@
 # tapl.untyped.terms
+# coding: UTF-8
 
 from ..lrparser import ParserError
-
-from . import concrete
 
 class Term(object):
     fields   = ('location',)
@@ -45,25 +44,38 @@ class Application(Term):
     def __str__(self):
         return 'App({}, {})'.format(self.lhs, self.rhs)
 
-def from_concrete(term, context=None):
+def to_nameless(term, context=None):
     if not context:
         context = []
 
-    if isinstance(term, concrete.Variable):
+    if isinstance(term, Variable):
         if term.id not in context:
             raise ParserError(term.location,
-                             'Unknown variable "{}"'.format(term.id))
+                              'Unknown variable "{}"'.format(term.id))
         return Variable(term.location, context.index(term.id))
-    elif isinstance(term, concrete.Abstraction):
+    elif isinstance(term, Abstraction):
         return Abstraction(term.location,
                            term.id,
-                           from_concrete(term.body, [term.id] + context))
-    elif isinstance(term, concrete.Application):
+                           to_nameless(term.body, [term.id] + context))
+    elif isinstance(term, Application):
         return Application(term.location,
-                           from_concrete(term.lhs, context),
-                           from_concrete(term.rhs, context))
-    elif isinstance(term, concrete.Parens):
-        return from_concrete(term.subterm, context)
-    elif isinstance(term, concrete.Goal):
-        return from_concrete(term.value, context)
+                           to_nameless(term.lhs, context),
+                           to_nameless(term.rhs, context))
+
+producers = [
+    # r0. § → Term $
+    lambda location, term, _: to_nameless(term),
+
+    # r1. Term → ID
+    lambda location, id: Variable(location, id),
+
+    # r2. Term → LAMBDA ID Term
+    lambda location, _, id, body: Abstraction(location, id, body),
+
+    # r3. Term → Term Term
+    lambda location, lhs, rhs: Application(location, lhs, rhs),
+
+    # r4. Term → LPAREN Term RPAREN
+    lambda location, _1, term, _2: term,
+]
 

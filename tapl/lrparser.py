@@ -14,17 +14,19 @@ class IncompleteParseError(Exception):
                                                         location.column))
 
 class LRParser:
-    def __init__(self, table):
+    def __init__(self, table, producers):
         assert(set(table['shifts']) & set(table['reductions']) == set())
         self._table     = table
+        self._producers = producers
         self._stack     = [table['start']]
 
     def _shift(self, state, location, token):
         self._stack.append((location, token))
         self._stack.append(state)
 
-    def _reduce(self, Term):
-        num_properties = len(Term._fields) - 1
+    def _reduce(self, rule):
+        producer = self._producers[rule]
+        num_properties = producer.__code__.co_argcount - 1
         num_to_remove  = 2 * num_properties
 
         tokens      = self._stack[-1 * num_to_remove::2]
@@ -33,7 +35,7 @@ class LRParser:
         location   = tokens[0][0]
         properties = [token[1] for token in tokens]
         fields     = [location] + properties
-        term       = Term(*fields)
+        term       = producer(*fields)
         self._stack.append((location, term))
 
         if (self._stack[-2]) not in self._table['gotos']:

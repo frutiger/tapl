@@ -1,6 +1,5 @@
 # tapl.arith.terms
-
-from . import concrete
+# coding: UTF-8
 
 class Term(object):
     fields   = ('location',)
@@ -55,24 +54,30 @@ class If(Term):
         self.true_value  = true_value
         self.false_value = false_value
 
-def from_concrete(term):
-    if isinstance(term, concrete.ZeroValue):
-        return ZeroValue(term.location)
-    elif isinstance(term, concrete.TrueValue):
-        return TrueValue(term.location)
-    elif isinstance(term, concrete.FalseValue):
-        return FalseValue(term.location)
-    elif isinstance(term, concrete.Succ):
-        return Succ(term.location, from_concrete(term.argument))
-    elif isinstance(term, concrete.Pred):
-        return Pred(term.location, from_concrete(term.argument))
-    elif isinstance(term, concrete.IsZero):
-        return IsZero(term.location, from_concrete(term.argument))
-    elif isinstance(term, concrete.If):
-        return If(term.location,
-                  from_concrete(term.predicate),
-                  from_concrete(term.true_value),
-                  from_concrete(term.false_value))
-    elif isinstance(term, concrete.Goal):
-        return from_concrete(term.value)
+producers = [
+    # r0. § → Term $
+    lambda location, term, _: term,
+
+    # r1. Term → ZERO
+    lambda location, _: ZeroValue(location),
+
+    # r2. Term → SUCC Term
+    lambda location, _, term: Succ(location, term),
+
+    # r3. Term → PRED Term
+    lambda location, _, term: Pred(location, term),
+
+    # r4. Term → TRUE
+    lambda location, _: TrueValue(location),
+
+    # r5. Term → FALSE
+    lambda location, _: FalseValue(location),
+
+    # r6. Term → ISZERO Term
+    lambda location, _, term: IsZero(location, term),
+
+    # r7. Term → IF Term THEN Term ELSE Term
+    lambda location, _1, predicate, _2, true_value, _3, false_value: \
+                              If(location, predicate, true_value, false_value),
+]
 

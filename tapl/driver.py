@@ -16,9 +16,9 @@ def lex(interpreter_name, source):
     return lexer.lex(source)
 
 def parse(interpreter_name, tokens):
-    parser = LRParser(get(interpreter_name, 'table', 'table'))
-    from_concrete = get(interpreter_name, 'terms', 'from_concrete')
-    return from_concrete(parser.parse(tokens))
+    parser = LRParser(get(interpreter_name, 'table', 'table'),
+                      get(interpreter_name, 'terms', 'producers'))
+    return parser.parse(tokens)
 
 def evaluate(interpreter_name, term):
     evaluate = get(interpreter_name, 'evaluator', 'evaluate')

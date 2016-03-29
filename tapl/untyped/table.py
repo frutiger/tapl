@@ -1,8 +1,6 @@
 # tapl.untyped.table
 # coding: UTF-8
-
-from . import concrete
-
+#
 # Given a grammar with the following production rules:
 #
 # r0. § → Term $
@@ -103,11 +101,11 @@ table = {
         (9,  'LPAREN'):  4,
     },
     'reductions': {
-        2:  concrete.Variable,
-        5:  concrete.Application,
-        7:  concrete.Parens,
-        9:  concrete.Abstraction,
-        10: concrete.Goal,
+        2:  1,
+        5:  3,
+        7:  4,
+        9:  2,
+        10: 0,
     },
     'gotos': {
         0: 1,
