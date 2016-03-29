@@ -64,4 +64,6 @@ def from_concrete(term, context=None):
                            from_concrete(term.rhs, context))
     elif isinstance(term, concrete.Parens):
         return from_concrete(term.subterm, context)
+    elif isinstance(term, concrete.Goal):
+        return from_concrete(term.value, context)
 

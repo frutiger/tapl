@@ -44,11 +44,13 @@ class LRParser:
         location, token_type, token = next(tokens)
         while True:
             state = self._stack[-1]
-            if (state, token_type) == self._table['finish']:
+            if state == self._table['finish']:
+                self._reduce(self._table['reductions'][state])
                 return self._stack[-2][1]
             elif (state, token_type) in self._table['shifts']:
                 self._shift(self._table['shifts'][(state, token_type)], location, token)
-                location, token_type, token = next(tokens)
+                if token_type != '$':
+                    location, token_type, token = next(tokens)
             elif state in self._table['reductions']:
                 self._reduce(self._table['reductions'][state])
             elif token_type == '$':

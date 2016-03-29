@@ -15,4 +15,5 @@ If         = namedtuple('If',         ['location',
                                        'true_value',
                                        'dummy_else',
                                        'false_value'])
+Goal       = namedtuple('Goal',       ['location', 'value', 'dummy'])
 

@@ -73,4 +73,6 @@ def from_concrete(term):
                   from_concrete(term.predicate),
                   from_concrete(term.true_value),
                   from_concrete(term.false_value))
+    elif isinstance(term, concrete.Goal):
+        return from_concrete(term.value)
 

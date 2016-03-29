@@ -5,7 +5,7 @@ from . import concrete
 
 # Given a grammar with the following production rules:
 #
-# r0. Goal -> Term
+# r0. § → Term $
 # r1. Term -> ZERO
 # r2. Term -> SUCC Term
 # r3. Term -> PRED Term
@@ -16,7 +16,7 @@ from . import concrete
 #
 # We can produce the following item sets, along with their transitions:
 #
-#  0. [Goal -> · Term]                           1
+#  0. [Goal -> · Term $]                         1
 #     [Term -> · ZERO]                           2
 #     [Term -> · SUCC Term]                      3
 #     [Term -> · PRED Term]                      4
@@ -24,7 +24,7 @@ from . import concrete
 #     [Term -> · FALSE]                          6
 #     [Term -> · ISZERO Term]                    7
 #     [Term -> · IF Term THEN Term ELSE Term]    8
-#  1. [Goal -> Term ·]
+#  1. [Goal -> Term · $]                        17
 #  2. [Term -> ZERO ·]
 #  3. [Term -> SUCC · Term]                      9
 #     [Term -> · ZERO]                           2
@@ -82,6 +82,7 @@ from . import concrete
 #     [Term -> · ISZERO Term]                    7
 #     [Term -> · IF Term THEN Term ELSE Term]    8
 # 16. [Term -> IF Term THEN Term ELSE Term ·]
+# 17. [Goal -> Term $ ·]
 #
 # Using the transitions, we can produce the following shift-reduce table:
 #
@@ -89,7 +90,7 @@ from . import concrete
 # | St | ZE | SU | PR | TR | FA | IS |  IF |  TH |  EL |   $ | Te |
 # |----|----|----|----|----|----|----|-----|-----|-----|-----|----|
 # |  0 | s2 | s3 | s4 | s5 | s6 | s7 |  s8 |     |     |     |  1 |
-# |  1 |    |    |    |    |    |    |     |     |     | acc |    |
+# |  1 |    |    |    |    |    |    |     |     |     |  17 |    |
 # |  2 | r1 | r1 | r1 | r1 | r1 | r1 |  r1 |  r1 |  r1 |  r1 |    |
 # |  3 | s2 | s3 | s4 | s5 | s6 | s7 |  s8 |     |     |     |  9 |
 # |  4 | s2 | s3 | s4 | s5 | s6 | s7 |  s8 |     |     |     | 10 |
@@ -105,12 +106,13 @@ from . import concrete
 # | 14 |    |    |    |    |    |    |     |     | s15 |     |    |
 # | 15 | s2 | s3 | s4 | s5 | s6 | s7 |  s8 |     |     |     | 16 |
 # | 16 | r8 | r8 | r8 | r8 | r8 | r8 |  r8 |  r8 |  r8 |  r8 |    |
+# | 17 | r0 | r0 | r0 | r0 | r0 | r0 |  r0 |  r0 |  r0 |  r0 |    |
 # |----|----|----|----|----|----|----|-----|-----|-----|-----|----|
 #
 
 table = {
     'start': 0,
-    'finish': (1, '$'),
+    'finish': 17,
     'shifts': {
         ( 0, 'ZERO'):    2,
         ( 0, 'SUCC'):    3,
@@ -119,6 +121,7 @@ table = {
         ( 0, 'FALSE'):   6,
         ( 0, 'ISZERO'):  7,
         ( 0, 'IF'):      8,
+        ( 1, '$'):      17,
         ( 3, 'ZERO'):    2,
         ( 3, 'SUCC'):    3,
         ( 3, 'PRED'):    4,
@@ -172,6 +175,7 @@ table = {
         10: concrete.Pred,
         11: concrete.IsZero,
         16: concrete.If,
+        17: concrete.Goal,
     },
     'gotos': {
          0:  1,
