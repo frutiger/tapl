@@ -1,24 +1,59 @@
 # tapl.arith.terms
 
-from collections import namedtuple
-
 from . import concrete
 
-ZeroValue  = namedtuple('ZeroValue',  ['location'])
-TrueValue  = namedtuple('TrueValue',  ['location'])
-FalseValue = namedtuple('FalseValue', ['location'])
-Succ       = namedtuple('Succ',       ['location', 'argument'])
-Pred       = namedtuple('Pred',       ['location', 'argument'])
-IsZero     = namedtuple('IsZero',     ['location', 'argument'])
-If         = namedtuple('If',         ['location',
-                                       'predicate',
-                                       'true_value',
-                                       'false_value'])
+class Term(object):
+    fields   = ('location',)
+    subterms = tuple()
 
-Succ.subterms   = { 'argument' }
-Pred.subterms   = { 'argument' }
-IsZero.subterms = { 'argument' }
-If.subterms     = { 'predicate', 'true_value', 'false_value' }
+    def __init__(self, location):
+        self.location = location
+
+class ZeroValue(Term):
+    def __init__(self, location):
+        Term.__init__(self, location)
+
+class TrueValue(Term):
+    def __init__(self, location):
+        Term.__init__(self, location)
+
+class FalseValue(Term):
+    def __init__(self, location):
+        Term.__init__(self, location)
+
+class Succ(Term):
+    fields   = Term.fields   + ('argument',)
+    subterms = Term.subterms + ('argument',)
+
+    def __init__(self, location, argument):
+        Term.__init__(self, location)
+        self.argument = argument
+
+class Pred(Term):
+    fields   = Term.fields   + ('argument',)
+    subterms = Term.subterms + ('argument',)
+
+    def __init__(self, location, argument):
+        Term.__init__(self, location)
+        self.argument = argument
+
+class IsZero(Term):
+    fields   = Term.fields   + ('argument',)
+    subterms = Term.subterms + ('argument',)
+
+    def __init__(self, location, argument):
+        Term.__init__(self, location)
+        self.argument = argument
+
+class If(Term):
+    fields   = Term.fields   + ('predicate', 'true_value', 'false_value')
+    subterms = Term.subterms + ('predicate', 'true_value', 'false_value')
+
+    def __init__(self, location, predicate, true_value, false_value):
+        Term.__init__(self, location)
+        self.predicate   = predicate
+        self.true_value  = true_value
+        self.false_value = false_value
 
 def from_concrete(term):
     if isinstance(term, concrete.ZeroValue):

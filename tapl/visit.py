@@ -3,7 +3,7 @@
 def visit(term, visitor):
     accumulator = None
     subterms    = getattr(term, 'subterms', set())
-    for field in term._fields:
+    for field in term.fields:
         prop     = getattr(term, field)
         result   = visit(prop, visitor) if field in subterms else prop
         acceptor = visitor._acceptors.get((type(term), field), None)
