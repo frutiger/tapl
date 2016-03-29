@@ -75,7 +75,8 @@ from . import concrete
 #
 
 table = {
-    'acceptance': (1, '$'),
+    'start': 0,
+    'finish': (1, '$'),
     'shifts': {
         (0,  'ID'):     2,
         (0,  'LAMBDA'): 3,

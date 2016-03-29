@@ -17,7 +17,7 @@ class LRParser:
     def __init__(self, table):
         assert(set(table['shifts']) & set(table['reductions']) == set())
         self._table     = table
-        self._stack     = [0]
+        self._stack     = [table['start']]
 
     def _shift(self, state, location, token):
         self._stack.append((location, token))
@@ -44,7 +44,7 @@ class LRParser:
         location, token_type, token = next(tokens)
         while True:
             state = self._stack[-1]
-            if (state, token_type) == self._table['acceptance']:
+            if (state, token_type) == self._table['finish']:
                 return self._stack[-2][1]
             elif (state, token_type) in self._table['shifts']:
                 self._shift(self._table['shifts'][(state, token_type)], location, token)
