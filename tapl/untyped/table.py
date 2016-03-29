@@ -43,13 +43,13 @@ from . import concrete
 #     [Term -> · LAMBDA ID Term]         3
 #     [Term -> · Term Term]              5
 #     [Term -> · LPAREN Term RPAREN]     4
-#  7. [Term -> LPAREN Term RPAREN · ]
+#  7. [Term -> LPAREN Term RPAREN ·]
 #  8. [Term -> LAMBDA ID · Term]         9
 #     [Term -> · ID]                     2
 #     [Term -> · LAMBDA ID Term]         3
 #     [Term -> · Term Term]              9
 #     [Term -> · LPAREN Term RPAREN]     4
-#  9. [Term -> LAMBDA ID Term·]
+#  9. [Term -> LAMBDA ID Term ·]
 #     [Term -> Term · Term]              5
 #     [Term -> · ID]                     2
 #     [Term -> · LAMBDA ID Term]         3
