@@ -10,9 +10,9 @@ from . import concrete
 # r2. Term -> SUCC Term
 # r3. Term -> PRED Term
 # r4. Term -> TRUE
-# r6. Term -> FALSE
-# r7. Term -> ISZERO Term
-# r8. Term -> IF Term THEN Term ELSE Term
+# r5. Term -> FALSE
+# r6. Term -> ISZERO Term
+# r7. Term -> IF Term THEN Term ELSE Term
 #
 # We can produce the following item sets, along with their transitions:
 #
