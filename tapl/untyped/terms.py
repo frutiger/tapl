@@ -1,8 +1,6 @@
 # tapl.untyped.terms
 # coding: UTF-8
 
-from ..lrparser import ParserError
-
 class Term(object):
     fields   = ('location',)
     subterms = tuple()
@@ -50,8 +48,8 @@ def to_nameless(term, context=None):
 
     if isinstance(term, Variable):
         if term.id not in context:
-            raise ParserError(term.location,
-                              'Unknown variable "{}"'.format(term.id))
+            raise RuntimeError(term.location,
+                               'Unknown variable "{}"'.format(term.id))
         return Variable(term.location, context.index(term.id))
     elif isinstance(term, Abstraction):
         return Abstraction(term.location,
