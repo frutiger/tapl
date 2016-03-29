@@ -51,8 +51,6 @@ class LRParser:
                 location, token_type, token = next(tokens)
             elif state in self._table['reductions']:
                 self._reduce(self._table['reductions'][state])
-            elif (state, token_type) in self._table['reductions']:
-                self._reduce(self._table['reductions'][(state, token_type)])
             elif token_type == '$':
                 raise IncompleteParseError(location)
             else:

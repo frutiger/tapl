@@ -100,11 +100,10 @@ table = {
         (9,  'LPAREN'): 4,
     },
     'reductions': {
-        2:              concrete.Variable,
-        5:              concrete.Application,
-        7:              concrete.Parens,
-        (9,  'RPAREN'): concrete.Abstraction,
-        (9,  '$'):      concrete.Abstraction,
+        2: concrete.Variable,
+        5: concrete.Application,
+        7: concrete.Parens,
+        9: concrete.Abstraction,
     },
     'gotos': {
         0: 1,
