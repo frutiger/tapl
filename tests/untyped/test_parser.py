@@ -3,22 +3,22 @@
 from unittest import TestCase
 from io       import StringIO
 
-from tapl.relexer               import Location, ReLexer
-from tapl.untyped.token_regexes import WHITESPACE, TOKEN_TYPES
+from tapl.relexer        import Location, ReLexer
+from tapl.untyped.tokens import tokens
 
 from tapl.lrparser         import IncompleteParseError, LRParser
-from tapl.untyped.lr_table import ACCEPTANCE, SHIFTS, REDUCTIONS, GOTOS
+from tapl.untyped.table    import table
 from tapl.untyped.concrete import Abstraction as Abs, \
                                   Application as App, \
                                   Variable    as Var, \
                                   Parens      as Par
 
-lexer = ReLexer(WHITESPACE, TOKEN_TYPES)
+lexer = ReLexer(tokens)
 def lex(source):
     return lexer.lex(source)
 
 def p(text):
-    parser = LRParser(ACCEPTANCE, SHIFTS, REDUCTIONS, GOTOS)
+    parser = LRParser(table)
     return parser.parse(lex(StringIO(text)))
 
 class Variable(TestCase):

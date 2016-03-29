@@ -14,13 +14,10 @@ class IncompleteParseError(Exception):
                                                         location.column))
 
 class LRParser:
-    def __init__(self, acceptance, shifts, reductions, gotos):
-        assert(set(shifts.keys()) & set(reductions.keys()) == set())
-        self._acceptance = acceptance
-        self._shifts     = shifts
-        self._reductions = reductions
-        self._gotos      = gotos
-        self._stack      = [0]
+    def __init__(self, table):
+        assert(set(table['shifts']) & set(table['reductions']) == set())
+        self._table     = table
+        self._stack     = [0]
 
     def _shift(self, state, location, token):
         self._stack.append((location, token))
@@ -39,23 +36,23 @@ class LRParser:
         term       = Term(*fields)
         self._stack.append((location, term))
 
-        if (self._stack[-2]) not in self._gotos:
+        if (self._stack[-2]) not in self._table['gotos']:
             raise RuntimeError('goto from state: {}'.format(self._stack[-2]))
-        self._stack.append(self._gotos[(self._stack[-2])])
+        self._stack.append(self._table['gotos'][(self._stack[-2])])
 
     def parse(self, tokens):
         location, token_type, token = next(tokens)
         while True:
             state = self._stack[-1]
-            if (state, token_type) == self._acceptance:
+            if (state, token_type) == self._table['acceptance']:
                 return self._stack[-2][1]
-            elif (state, token_type) in self._shifts:
-                self._shift(self._shifts[(state, token_type)], location, token)
+            elif (state, token_type) in self._table['shifts']:
+                self._shift(self._table['shifts'][(state, token_type)], location, token)
                 location, token_type, token = next(tokens)
-            elif state in self._reductions:
-                self._reduce(self._reductions[state])
-            elif (state, token_type) in self._reductions:
-                self._reduce(self._reductions[(state, token_type)])
+            elif state in self._table['reductions']:
+                self._reduce(self._table['reductions'][state])
+            elif (state, token_type) in self._table['reductions']:
+                self._reduce(self._table['reductions'][(state, token_type)])
             elif token_type == '$':
                 raise IncompleteParseError(location)
             else:

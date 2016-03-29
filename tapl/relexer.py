@@ -19,12 +19,11 @@ def bump_location(char, location):
         return Location(location.line, location.column + 1)
 
 class ReLexer:
-    def __init__(self, whitespace, token_types):
-        self._whitespace  = whitespace
-        self._token_types = token_types
+    def __init__(self, tokens):
+        self._tokens = tokens
 
     def _token_type(self, location, token):
-        for token_type, regex in self._token_types.items():
+        for token_type, regex in self._tokens['types'].items():
             if regex.match(token):
                 return token_type
         raise UnknownToken(location, token)
@@ -45,7 +44,7 @@ class ReLexer:
             char     = source.read(1)
             location = bump_location(char, location)
 
-            if char and char not in self._whitespace:
+            if char and char not in self._tokens['whitespace']:
                 if token_start is None:
                     assert(not token_so_far)
                     token_start = location

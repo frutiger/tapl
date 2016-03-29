@@ -3,13 +3,14 @@
 from unittest import TestCase
 from io       import StringIO
 
-from tapl.relexer             import Location, ReLexer
-from tapl.arith.token_regexes import WHITESPACE, TOKEN_TYPES
+from tapl.relexer      import Location, ReLexer
+from tapl.arith.tokens import tokens
 
 def l(line, column):
     return Location(line, column)
 
-lexer = ReLexer(WHITESPACE, TOKEN_TYPES)
+lexer = ReLexer(tokens)
+
 def lex(text):
     return lexer.lex(StringIO(text))
 

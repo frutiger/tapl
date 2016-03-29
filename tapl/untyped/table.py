@@ -1,4 +1,4 @@
-# tapl.untyped.lr_table
+# tapl.untyped.table
 # coding: UTF-8
 
 from . import concrete
@@ -74,46 +74,45 @@ from . import concrete
 # |-------|----|--------|--------|--------|-----|------|
 #
 
-ACCEPTANCE = (1, '$')
-
-SHIFTS = {
-    (0,  'ID'):     2,
-    (0,  'LAMBDA'): 3,
-    (0,  'LPAREN'): 4,
-    (1,  'ID'):     2,
-    (1,  'LAMBDA'): 3,
-    (1,  'LPAREN'): 4,
-    (3,  'ID'):     8,
-    (4,  'ID'):     2,
-    (4,  'LAMBDA'): 3,
-    (4,  'LPAREN'): 4,
-    (6,  'ID'):     2,
-    (6,  'LAMBDA'): 3,
-    (6,  'LPAREN'): 4,
-    (6,  'RPAREN'): 7,
-    (8,  'ID'):     2,
-    (8,  'LAMBDA'): 3,
-    (8,  'LPAREN'): 4,
-    (9,  'ID'):     2,
-    (9,  'LAMBDA'): 3,
-    (9,  'LPAREN'): 4,
-}
-
-REDUCTIONS = {
-    2:              concrete.Variable,
-    5:              concrete.Application,
-    7:              concrete.Parens,
-    (9,  'RPAREN'): concrete.Abstraction,
-    (9,  '$'):      concrete.Abstraction,
-}
-
-GOTOS = {
-    0: 1,
-    1: 5,
-    4: 6,
-    5: 5,
-    6: 5,
-    8: 9,
-    9: 5,
+table = {
+    'acceptance': (1, '$'),
+    'shifts': {
+        (0,  'ID'):     2,
+        (0,  'LAMBDA'): 3,
+        (0,  'LPAREN'): 4,
+        (1,  'ID'):     2,
+        (1,  'LAMBDA'): 3,
+        (1,  'LPAREN'): 4,
+        (3,  'ID'):     8,
+        (4,  'ID'):     2,
+        (4,  'LAMBDA'): 3,
+        (4,  'LPAREN'): 4,
+        (6,  'ID'):     2,
+        (6,  'LAMBDA'): 3,
+        (6,  'LPAREN'): 4,
+        (6,  'RPAREN'): 7,
+        (8,  'ID'):     2,
+        (8,  'LAMBDA'): 3,
+        (8,  'LPAREN'): 4,
+        (9,  'ID'):     2,
+        (9,  'LAMBDA'): 3,
+        (9,  'LPAREN'): 4,
+    },
+    'reductions': {
+        2:              concrete.Variable,
+        5:              concrete.Application,
+        7:              concrete.Parens,
+        (9,  'RPAREN'): concrete.Abstraction,
+        (9,  '$'):      concrete.Abstraction,
+    },
+    'gotos': {
+        0: 1,
+        1: 5,
+        4: 6,
+        5: 5,
+        6: 5,
+        8: 9,
+        9: 5,
+    },
 }
 
