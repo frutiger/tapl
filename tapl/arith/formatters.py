@@ -1,5 +1,4 @@
 # tapl.arith.formatters
-# coding=UTF-8
 
 from ..visit import visit, accept, visitor
 

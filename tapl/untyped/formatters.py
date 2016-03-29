@@ -1,5 +1,5 @@
 # tapl.untyped.formatters
-# coding=UTF-8
+# coding: UTF-8
 
 from ..visit import visit, accept, visitor
 
