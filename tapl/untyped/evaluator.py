@@ -9,14 +9,14 @@ class NoRuleApplies(Exception):
 
 def shift(term, distance, cutoff=0):
     if isinstance(term, terms.Variable):
-        if term.binder >= cutoff:
-            binder = term.binder + distance
+        if term.id >= cutoff:
+            id = term.id + distance
         else:
-            binder = term.binder
-        return terms.Variable(term.location, binder)
+            id = term.id
+        return terms.Variable(term.location, id)
     elif isinstance(term, terms.Abstraction):
         return terms.Abstraction(term.location,
-                                 term.hint,
+                                 term.id,
                                  shift(term.body, distance, cutoff + 1))
     elif isinstance(term, terms.Application):
         return terms.Application(term.location,
@@ -27,13 +27,13 @@ def shift(term, distance, cutoff=0):
 
 def substitute(term, placeholder, replacement):
     if isinstance(term, terms.Variable):
-        if term.binder == placeholder:
+        if term.id == placeholder:
             return replacement
         else:
             return term
     elif isinstance(term, terms.Abstraction):
         return terms.Abstraction(term.location,
-                                 term.hint,
+                                 term.id,
                                  substitute(term.body,
                                             placeholder + 1,
                                             shift(replacement, 1)))

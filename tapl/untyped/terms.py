@@ -6,8 +6,8 @@ from ..lrparser import ParserError
 
 from . import concrete
 
-Variable    = namedtuple('Variable',    ['location', 'binder'])
-Abstraction = namedtuple('Abstraction', ['location', 'hint', 'body'])
+Variable    = namedtuple('Variable',    ['location', 'id'])
+Abstraction = namedtuple('Abstraction', ['location', 'id', 'body'])
 Application = namedtuple('Application', ['location', 'lhs',  'rhs'])
 
 Abstraction.subterms = { 'body' }

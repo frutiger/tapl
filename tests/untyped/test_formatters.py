@@ -7,11 +7,11 @@ from tapl.visit              import *
 from tapl.untyped.terms      import *
 from tapl.untyped.formatters import *
 
-def var(binder):
-    return Variable(None, binder)
+def var(id):
+    return Variable(None, id)
 
-def abst(hint, body):
-    return Abstraction(None, hint, body)
+def abst(id, body):
+    return Abstraction(None, id, body)
 
 def app(lhs, rhs):
     return Application(None, lhs, rhs)

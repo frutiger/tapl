@@ -14,19 +14,19 @@ class TextFormatter:
     def finish(self):
         self._file.write(u'\n')
 
-    @accept(terms.Variable, 'binder')
-    def write_binder(self, binder):
-        self._file.write(self._context[binder])
+    @accept(terms.Variable, 'id')
+    def write_id(self, id):
+        self._file.write(self._context[id])
 
-    @accept(terms.Abstraction, 'hint')
-    def insert_and_write_hint(self, hint):
-        while hint in self._context:
-            hint = hint + '\''
-        self._context.insert(0, hint)
-        self._file.write(u'(λ' + hint + '.')
+    @accept(terms.Abstraction, 'id')
+    def insert_and_write_id(self, id):
+        while id in self._context:
+            id = id + '\''
+        self._context.insert(0, id)
+        self._file.write(u'(λ' + id + '.')
 
     @accept(terms.Abstraction)
-    def pop_hint(self, result):
+    def pop_id(self, result):
         self._context.pop(0)
         self._file.write(u')')
 
@@ -59,12 +59,12 @@ class DotFormatter:
             self._file.write(u'{} [label = {}]\n'.format(id, label))
         self._file.write(u'}\n')
 
-    @accept(terms.Variable, 'binder')
-    def in_variable(self, binder):
-        return self._get_label_id(binder)
+    @accept(terms.Variable, 'id')
+    def in_variable(self, id):
+        return self._get_label_id(id)
 
-    @accept(terms.Abstraction, 'hint')
-    def pre_abstraction(self, hint):
+    @accept(terms.Abstraction, 'id')
+    def pre_abstraction(self, id):
         self._current_id = self._get_label_id(u'\u03bb')
 
     @accept(terms.Abstraction, 'body')
