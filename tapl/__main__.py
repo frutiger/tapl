@@ -70,7 +70,7 @@ def main():
     if args.output == '-' or args.output is None:
         outfile = sys.stdout
     else:
-        outfile = open(args.output)
+        outfile = open(args.output, 'w')
 
     try:
         tokens = lex(interpreter_name, infile)
