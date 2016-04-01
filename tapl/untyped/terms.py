@@ -1,6 +1,8 @@
 # tapl.untyped.terms
 # coding: UTF-8
 
+from ..errors import EvaluationError
+
 class Term(object):
     fields   = ('location',)
     subterms = tuple()
@@ -48,8 +50,8 @@ def to_nameless(term, context=None):
 
     if isinstance(term, Variable):
         if term.id not in context:
-            raise RuntimeError(term.location,
-                               'Unknown variable "{}"'.format(term.id))
+            raise EvaluationError(term.location,
+                                  'Unknown variable "{}"'.format(term.id))
         return Variable(term.location, context.index(term.id))
     elif isinstance(term, Abstraction):
         return Abstraction(term.location,
