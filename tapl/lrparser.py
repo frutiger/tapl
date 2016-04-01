@@ -38,9 +38,10 @@ class LRParser:
         term       = producer(*fields)
         self._stack.append((location, term))
 
-        if (self._stack[-2]) not in self._table['gotos']:
+        if (self._stack[-2], term.name) not in self._table['gotos']:
             raise RuntimeError('goto from state: {}'.format(self._stack[-2]))
-        self._stack.append(self._table['gotos'][(self._stack[-2])])
+        goto = self._table['gotos'][(self._stack[-2], term.name)]
+        self._stack.append(goto)
 
     def parse(self, tokens):
         location, token_type, token = next(tokens)

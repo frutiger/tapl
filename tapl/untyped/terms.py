@@ -4,6 +4,7 @@
 from ..errors import EvaluationError
 
 class Term(object):
+    name     = 'Term'
     fields   = ('location',)
     subterms = tuple()
 

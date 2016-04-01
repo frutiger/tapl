@@ -2,6 +2,7 @@
 # coding: UTF-8
 
 class Term(object):
+    name     = 'Term'
     fields   = ('location',)
     subterms = tuple()
 
