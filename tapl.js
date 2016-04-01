@@ -27,7 +27,8 @@ function run(interpreter, input, handler) {
                 error = 'Unexpected end of input';
             }
             else if (result.errorType === 'UnknownToken' ||
-                     result.errorType === 'ParserError') {
+                     result.errorType === 'ParserError'  ||
+                     result.errorType === 'EvaluationError') {
                 error = result.errorMessage;
             }
             else if (result.errorMessage) {
