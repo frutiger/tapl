@@ -63,20 +63,3 @@ def to_nameless(term, context=None):
                            to_nameless(term.lhs, context),
                            to_nameless(term.rhs, context))
 
-producers = [
-    # r0. § → Term $
-    lambda location, term, _: to_nameless(term),
-
-    # r1. Term → ID
-    lambda location, id: Variable(location, id),
-
-    # r2. Term → LAMBDA ID Term
-    lambda location, _, id, body: Abstraction(location, id, body),
-
-    # r3. Term → Term Term
-    lambda location, lhs, rhs: Application(location, lhs, rhs),
-
-    # r4. Term → LPAREN Term RPAREN
-    lambda location, _1, term, _2: term,
-]
-

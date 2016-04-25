@@ -1,11 +1,11 @@
-# tapl.arith.formatters
+# tapl.arith.formatters.text
 
-from ..visit import visit, accept, visitor
+from ...visit import accept, visitor
 
-from . import terms
+from .. import terms
 
 @visitor
-class TextFormatter:
+class Formatter:
     def __init__(self, file):
         self._file    = file
         self._context = []

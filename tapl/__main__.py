@@ -9,9 +9,31 @@ import locale
 import os
 import sys
 
-from .driver   import lex, parse, evaluate, write, flush
-from .relexer  import UnknownToken
-from .lrparser import IncompleteParseError, ParserError
+from .lrparser import LRParser, IncompleteParseError, ParserError
+from .relexer  import ReLexer, UnknownToken
+from .visit    import visit
+
+def lexical_analysis(Toolchain, source):
+    return ReLexer(Toolchain.tokens).lex(source)
+
+def syntax_analysis(Toolchain, tokens):
+    return LRParser(Toolchain.table).parse(tokens)
+
+def semantic_analysis(Toolchain, node):
+    def visit(node):
+        selections = Toolchain.rules[node.reduction][0]
+        children   = [node.children[slot] for slot in selections]
+        recursions = Toolchain.rules[node.reduction][1]
+        children   = [visit(child) if index in recursions else child \
+                                       for index, child in enumerate(children)]
+        return Toolchain.rules[node.reduction][2](node.location, *children)
+
+    return Toolchain.semantics(visit(node))
+
+def write(Formatter, term, out):
+    formatter = Formatter(out)
+    visit(term, formatter)
+    formatter.finish()
 
 def getline(*args):
     try:
@@ -19,29 +41,30 @@ def getline(*args):
     except NameError:
         return input(*args)
 
-def repl(interpreter_name, formatter_name):
+def repl(Toolchain, Formatter):
     while True:
         try:
             line = getline('> ') + '\n'
             while True:
                 try:
-                    tokens = lex(interpreter_name, io.StringIO(line))
-                    term   = parse(interpreter_name, tokens)
+                    tokens = lexical_analysis(Toolchain, io.StringIO(line))
+                    tree   = syntax_analysis(Toolchain, tokens)
                     break
                 except IncompleteParseError:
                     line = line + getline('. ') + '\n'
-            term = evaluate(interpreter_name, term)
-            write(interpreter_name, term, formatter_name, sys.stdout)
+            node = semantic_analysis(Toolchain, tree)
+            term = Toolchain.evaluate(node)
+            write(Formatter, term, sys.stdout)
         except (UnknownToken, ParserError) as e:
             print(e.args[0], file=sys.stderr)
             continue
         except (KeyboardInterrupt, EOFError):
-            flush(interpreter_name, formatter_name, sys.stdout)
+            Formatter(sys.stdout).finish()
             break
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('interpreter',
+    parser.add_argument('toolchain',
                          nargs='?', default=os.path.basename(sys.argv[0]))
     parser.add_argument('-i', '--input',  type=str)
     parser.add_argument('-o', '--output', type=str)
@@ -49,18 +72,27 @@ def main():
     parser.add_argument('-n', '--no-evaluate', action='store_true')
     args = parser.parse_args()
 
+    toolchain_module = 'tapl.{}.toolchain'.format(args.toolchain)
     try:
-        importlib.import_module('tapl.' + args.interpreter)
+        Toolchain = getattr(importlib.import_module(toolchain_module),
+                           'Toolchain')
     except ImportError as e:
-        print('Unknown interpreter: ' + args.interpreter, file=sys.stderr)
+        print('Unknown toolchain: ' + args.toolchain, file=sys.stderr)
         return -1
 
-    interpreter_name = args.interpreter
-    formatter_name = args.format[0].upper() + args.format[1:] + 'Formatter'
+    formatter_module = 'tapl.{}.formatters.{}'.format(args.toolchain,
+                                                      args.format)
+    try:
+        Formatter = getattr(importlib.import_module(formatter_module),
+                           'Formatter')
+    except ImportError as e:
+        print(formatter_module)
+        print('Unknown formatter: ' + args.format, file=sys.stderr)
+        return -1
 
     if args.input is None and args.output is None:
         import readline
-        return repl(args.interpreter, formatter_name)
+        return repl(Toolchain, Formatter)
 
     if args.input == '-' or args.input is None:
         infile = sys.stdin
@@ -73,11 +105,12 @@ def main():
         outfile = open(args.output, 'w')
 
     try:
-        tokens = lex(interpreter_name, infile)
-        term   = parse(interpreter_name, tokens)
+        tokens = lexical_analysis(Toolchain, infile)
+        tree   = syntax_analysis(Toolchain, tokens)
+        node   = semantic_analysis(Toolchain, tree)
         if not args.no_evaluate:
-            term = evaluate(interpreter_name, term)
-        write(interpreter_name, term, formatter_name, outfile)
+            term = Toolchain.evaluate(node)
+        write(Formatter, term, outfile)
     except (UnknownToken, IncompleteParseError, ParserError) as e:
         print(e.args[0], file=sys.stderr)
         return -1

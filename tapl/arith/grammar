@@ -1,0 +1,7 @@
+Term -> ZERO
+Term -> SUCC Term
+Term -> PRED Term
+Term -> TRUE
+Term -> FALSE
+Term -> ISZERO Term
+Term -> IF Term THEN Term ELSE Term

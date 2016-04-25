@@ -13,11 +13,16 @@ class IncompleteParseError(Exception):
                                                         location.line,
                                                         location.column))
 
+class Node(object):
+    def __init__(self, location, reduction, children):
+        self.location  = location
+        self.reduction = reduction
+        self.children  = children
+
 class LRParser:
-    def __init__(self, table, producers):
+    def __init__(self, table):
         assert(set(table['shifts']) & set(table['reductions']) == set())
         self._table     = table
-        self._producers = producers
         self._stack     = [table['start']]
 
     def _shift(self, state, location, token):
@@ -25,22 +30,19 @@ class LRParser:
         self._stack.append(state)
 
     def _reduce(self, rule):
-        producer = self._producers[rule]
-        num_properties = producer.__code__.co_argcount - 1
-        num_to_remove  = 2 * num_properties
+        num_to_remove = 2 * rule[1]
 
         tokens      = self._stack[-1 * num_to_remove::2]
         self._stack = self._stack[:-1 * num_to_remove]
 
         location   = tokens[0][0]
         properties = [token[1] for token in tokens]
-        fields     = [location] + properties
-        term       = producer(*fields)
-        self._stack.append((location, term))
+        node       = Node(location, rule[2], properties)
+        self._stack.append((location, node))
 
-        if (self._stack[-2], term.name) not in self._table['gotos']:
+        if (self._stack[-2], rule[0]) not in self._table['gotos']:
             raise RuntimeError('goto from state: {}'.format(self._stack[-2]))
-        goto = self._table['gotos'][(self._stack[-2], term.name)]
+        goto = self._table['gotos'][(self._stack[-2], rule[0])]
         self._stack.append(goto)
 
     def parse(self, tokens):
@@ -48,7 +50,6 @@ class LRParser:
         while True:
             state = self._stack[-1]
             if state == self._table['finish']:
-                self._reduce(self._table['reductions'][state])
                 return self._stack[-2][1]
             elif (state, token_type) in self._table['shifts']:
                 self._shift(self._table['shifts'][(state, token_type)], location, token)

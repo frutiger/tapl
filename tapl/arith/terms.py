@@ -55,30 +55,3 @@ class If(Term):
         self.true_value  = true_value
         self.false_value = false_value
 
-producers = [
-    # r0. § → Term $
-    lambda location, term, _: term,
-
-    # r1. Term → ZERO
-    lambda location, _: ZeroValue(location),
-
-    # r2. Term → SUCC Term
-    lambda location, _, term: Succ(location, term),
-
-    # r3. Term → PRED Term
-    lambda location, _, term: Pred(location, term),
-
-    # r4. Term → TRUE
-    lambda location, _: TrueValue(location),
-
-    # r5. Term → FALSE
-    lambda location, _: FalseValue(location),
-
-    # r6. Term → ISZERO Term
-    lambda location, _, term: IsZero(location, term),
-
-    # r7. Term → IF Term THEN Term ELSE Term
-    lambda location, _1, predicate, _2, true_value, _3, false_value: \
-                              If(location, predicate, true_value, false_value),
-]
-
