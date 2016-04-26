@@ -9,6 +9,7 @@ import locale
 import os
 import sys
 
+from .errors   import EvaluationError
 from .lrparser import LRParser, IncompleteParseError, ParserError
 from .relexer  import ReLexer, UnknownToken
 from .visit    import visit
@@ -55,7 +56,7 @@ def repl(Toolchain, Formatter):
             node = semantic_analysis(Toolchain, tree)
             term = Toolchain.evaluate(node)
             write(Formatter, term, sys.stdout)
-        except (UnknownToken, ParserError) as e:
+        except (UnknownToken, ParserError, EvaluationError) as e:
             print(e.args[0], file=sys.stderr)
             continue
         except (KeyboardInterrupt, EOFError):
@@ -111,7 +112,8 @@ def main():
         if not args.no_evaluate:
             term = Toolchain.evaluate(node)
         write(Formatter, term, outfile)
-    except (UnknownToken, IncompleteParseError, ParserError) as e:
+    except (UnknownToken, IncompleteParseError, ParserError,
+            EvaluationError) as e:
         print(e.args[0], file=sys.stderr)
         return -1
 
