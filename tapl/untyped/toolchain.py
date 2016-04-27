@@ -10,11 +10,11 @@ from .evaluator import evaluate
 class Toolchain(object):
     '''Grammar:
 
-Term -> Variable
-Variable -> ID
-Term -> LAMBDA ID Term
-Term -> LPAREN Term RPAREN
-Term -> Term Term
+Term -> Term SubTerm
+Term -> SubTerm
+SubTerm -> ID
+SubTerm -> LAMBDA ID Term
+SubTerm -> LPAREN Term RPAREN
 '''
 
     tokens = {
@@ -28,55 +28,56 @@ Term -> Term Term
     }
 
     table = {
-        'finish': 8,
         'gotos': {
-            (2, 'Term'): 8,
-            (9, 'Term'): 3,
-            (0, 'Term'): 4,
-            (3, 'Term'): 3,
-            (8, 'Term'): 3,
-            (6, 'Term'): 9,
-            (4, 'Term'): 3,
+            (7, 'SubTerm'): 4,
+            (10, 'SubTerm'): 4,
+            (9, 'SubTerm'): 6,
+            (9, 'Term'): 7,
+            (0, 'Term'): 10,
+            (0, 'SubTerm'): 6,
+            (3, 'Term'): 1,
+            (1, 'SubTerm'): 4,
+            (3, 'SubTerm'): 6,
         },
-        'reductions': {
-            1: ('Term', 3, 2),
-            3: ('Term', 2, 3),
-            4: ('Term', 3, 1),
-            7: ('Term', 1, 0),
-        },
-        'start': 2,
         'shifts': {
-            (8, 'ID'): 7,
-            (4, 'LPAREN'): 6,
-            (3, 'LAMBDA'): 5,
-            (3, 'ID'): 7,
-            (8, 'LAMBDA'): 5,
-            (6, 'LPAREN'): 6,
-            (9, 'RPAREN'): 1,
-            (6, 'ID'): 7,
-            (3, 'LPAREN'): 6,
-            (4, 'ID'): 7,
-            (8, 'LPAREN'): 6,
             (9, 'LAMBDA'): 5,
-            (0, 'LPAREN'): 6,
-            (2, 'LPAREN'): 6,
-            (9, 'ID'): 7,
-            (9, 'LPAREN'): 6,
+            (3, 'LPAREN'): 9,
+            (1, 'LPAREN'): 9,
+            (9, 'LPAREN'): 9,
+            (3, 'LAMBDA'): 5,
+            (0, 'LPAREN'): 9,
+            (1, 'LAMBDA'): 5,
+            (9, 'ID'): 8,
+            (7, 'LAMBDA'): 5,
             (0, 'LAMBDA'): 5,
-            (4, 'LAMBDA'): 5,
-            (2, 'ID'): 7,
-            (2, 'LAMBDA'): 5,
-            (6, 'LAMBDA'): 5,
-            (0, 'ID'): 7,
-            (5, 'ID'): 0,
+            (10, 'LPAREN'): 9,
+            (7, 'LPAREN'): 9,
+            (3, 'ID'): 8,
+            (1, 'ID'): 8,
+            (5, 'ID'): 3,
+            (0, 'ID'): 8,
+            (7, 'ID'): 8,
+            (10, 'LAMBDA'): 5,
+            (7, 'RPAREN'): 2,
+            (10, 'ID'): 8,
         },
+        'start': 0,
+        'reductions': {
+            8: ('SubTerm', 1, 2),
+            1: ('SubTerm', 3, 3),
+            2: ('SubTerm', 3, 4),
+            4: ('Term', 2, 0),
+            6: ('Term', 1, 1),
+        },
+        'finish': 10,
     }
 
     rules = (
+        ((0, 1), {0, 1}, Application),     # Term SubTerm
+        ((0,),   {0},    lambda _, x: x),  # SubTerm
         ((0,),   {},     Variable),        # ID
         ((1, 2), {1},    Abstraction),     # LAMBDA ID Term
         ((1,),   {0},    lambda _, x: x),  # LPAREN Term RPAREN
-        ((0, 1), {0, 1}, Application),     # Term Term
     )
 
     @staticmethod

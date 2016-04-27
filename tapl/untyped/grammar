@@ -1,4 +1,5 @@
-Term -> ID
-Term -> LAMBDA ID Term
-Term -> LPAREN Term RPAREN
-Term -> Term Term
+Term -> Term SubTerm
+Term -> SubTerm
+SubTerm -> ID
+SubTerm -> LAMBDA ID Term
+SubTerm -> LPAREN Term RPAREN
