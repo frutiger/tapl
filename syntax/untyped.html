@@ -9,24 +9,27 @@
 <span class="rules-heading">Syntax</span>
 <p>
 
+<span class="syntax-metavar">Term</span> →
+<span class="syntax-metavar">Term</span>
+<span class="syntax-metavar">SubTerm</span><br>
+
+<span class="syntax-metavar">Term</span> →
+<span class="syntax-metavar">SubTerm</span><br>
+
 <span class="syntax-metavar">id</span> →
 [a-z]+<br>
 
-<span class="syntax-metavar">term</span> →
+<span class="syntax-metavar">SubTerm</span> →
 <span class="syntax-metavar">id</span><br>
 
-<span class="syntax-metavar">term</span> →
+<span class="syntax-metavar">SubTerm</span> →
 <span class="syntax-keyword">\</span>
 <span class="syntax-metavar">id</span>
-<span class="syntax-metavar">term</span><br>
+<span class="syntax-metavar">Term</span><br>
 
-<span class="syntax-metavar">term</span> →
-<span class="syntax-metavar">term</span>
-<span class="syntax-metavar">term</span><br>
-
-<span class="syntax-metavar">term</span> →
+<span class="syntax-metavar">Serm</span> →
 <span class="syntax-keyword">(</span>
-<span class="syntax-metavar">term</span>
+<span class="syntax-metavar">Term</span>
 <span class="syntax-keyword">)</span><br>
 </body>
 
