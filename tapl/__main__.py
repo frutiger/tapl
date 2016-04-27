@@ -63,6 +63,41 @@ def repl(Toolchain, Formatter):
             Formatter(sys.stdout).finish()
             break
 
+def interpret(Toolchain, Formatter, infile, outfile, no_evaluate=False):
+    try:
+        tokens = lexical_analysis(Toolchain, infile)
+        tree   = syntax_analysis(Toolchain, tokens)
+        node   = semantic_analysis(Toolchain, tree)
+        if not no_evaluate:
+            term = Toolchain.evaluate(node)
+            write(Formatter, term, outfile)
+        else:
+            write(Formatter, node, outfile)
+    except (UnknownToken, IncompleteParseError, ParserError,
+            EvaluationError) as e:
+        print(e.args[0], file=sys.stderr)
+        return -1
+
+def get_toolchain_and_formatter(toolchain, formatter):
+    toolchain_module = 'tapl.{}.toolchain'.format(toolchain)
+    try:
+        Toolchain = getattr(importlib.import_module(toolchain_module),
+                           'Toolchain')
+    except ImportError as e:
+        print('Unknown toolchain: ' + toolchain, file=sys.stderr)
+        return -1
+
+    formatter_module = 'tapl.{}.formatters.{}'.format(toolchain, formatter)
+    try:
+        Formatter = getattr(importlib.import_module(formatter_module),
+                           'Formatter')
+    except ImportError as e:
+        print(formatter_module)
+        print('Unknown formatter: ' + formatter, file=sys.stderr)
+        return -1
+
+    return Toolchain, Formatter
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('toolchain',
@@ -73,23 +108,8 @@ def main():
     parser.add_argument('-n', '--no-evaluate', action='store_true')
     args = parser.parse_args()
 
-    toolchain_module = 'tapl.{}.toolchain'.format(args.toolchain)
-    try:
-        Toolchain = getattr(importlib.import_module(toolchain_module),
-                           'Toolchain')
-    except ImportError as e:
-        print('Unknown toolchain: ' + args.toolchain, file=sys.stderr)
-        return -1
-
-    formatter_module = 'tapl.{}.formatters.{}'.format(args.toolchain,
-                                                      args.format)
-    try:
-        Formatter = getattr(importlib.import_module(formatter_module),
-                           'Formatter')
-    except ImportError as e:
-        print(formatter_module)
-        print('Unknown formatter: ' + args.format, file=sys.stderr)
-        return -1
+    Toolchain, Formatter = get_toolchain_and_formatter(args.toolchain,
+                                                       args.format)
 
     if args.input is None and args.output is None:
         import readline
@@ -105,19 +125,7 @@ def main():
     else:
         outfile = open(args.output, 'w')
 
-    try:
-        tokens = lexical_analysis(Toolchain, infile)
-        tree   = syntax_analysis(Toolchain, tokens)
-        node   = semantic_analysis(Toolchain, tree)
-        if not args.no_evaluate:
-            term = Toolchain.evaluate(node)
-            write(Formatter, term, outfile)
-        else:
-            write(Formatter, node, outfile)
-    except (UnknownToken, IncompleteParseError, ParserError,
-            EvaluationError) as e:
-        print(e.args[0], file=sys.stderr)
-        return -1
+    return interpret(Toolchain, Formatter, infile, outfile, args.no_evaluate)
 
 if __name__ == '__main__':
     sys.exit(main())

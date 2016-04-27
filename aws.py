@@ -2,18 +2,15 @@
 
 import io
 
-from tapl.driver import lex, parse, evaluate, write
+from tapl.__main__ import get_toolchain_and_formatter, interpret
 
 def aws(event, context):
-    input = event['input'].decode('UTF-8')
-
-    tokens = lex(event['interpreter'], io.StringIO(input))
-    term   = parse(event['interpreter'], tokens)
-    term   = evaluate(event['interpreter'], term)
-
-    output = io.StringIO()
-    write(event['interpreter'], term, 'TextFormatter', output)
-    return output.getvalue().encode('UTF-8')
+    Toolchain, Formatter = get_toolchain_and_formatter(event['interpreter'],
+                                                       'text')
+    infile  = io.StringIO(event['input'].decode('UTF-8'))
+    outfile = io.StringIO()
+    interpret(Toolchain, Formatter, infile, outfile)
+    return outfile.getvalue().encode('UTF-8')
 
 if __name__ == '__main__':
     import sys
