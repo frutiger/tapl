@@ -238,6 +238,8 @@ if __name__ == '__main__':
 
     rules, nonterminals, terminals, symbols, observer, item_sets = \
                                                    build(goal, productions)
-    print(table(observer, terminals, nonterminals, item_sets, rules))
-    #document(rules, nonterminals, terminals, symbols, observer, item_sets)
+    if len(sys.argv) >= 2 and sys.argv[1] == '-d':
+        document(rules, nonterminals, terminals, symbols, observer, item_sets)
+    else:
+        print(table(observer, terminals, nonterminals, item_sets, rules))
 
