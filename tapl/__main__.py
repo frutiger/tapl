@@ -111,7 +111,9 @@ def main():
         node   = semantic_analysis(Toolchain, tree)
         if not args.no_evaluate:
             term = Toolchain.evaluate(node)
-        write(Formatter, term, outfile)
+            write(Formatter, term, outfile)
+        else:
+            write(Formatter, node, outfile)
     except (UnknownToken, IncompleteParseError, ParserError,
             EvaluationError) as e:
         print(e.args[0], file=sys.stderr)
