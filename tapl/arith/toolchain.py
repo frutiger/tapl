@@ -3,9 +3,7 @@
 
 import re
 
-from .terms     import ZeroValue, Succ, Pred, \
-                       TrueValue, FalseValue, IsZero, \
-                       If
+from .terms     import ZeroValue, Succ, Pred, TrueValue, FalseValue, IsZero, If
 from .evaluator import evaluate
 
 class Toolchain(object):

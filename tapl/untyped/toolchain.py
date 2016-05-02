@@ -3,8 +3,7 @@
 
 import re
 
-from .terms     import Variable, Abstraction, Application, \
-                       to_nameless
+from .terms     import Variable, Abstraction, Application, to_nameless
 from .evaluator import evaluate
 
 class Toolchain(object):
