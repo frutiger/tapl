@@ -1,0 +1,3 @@
+Term -> ZERO
+Term -> SUCC Term
+Term -> PRED Term

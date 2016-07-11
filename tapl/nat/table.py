@@ -1,0 +1,1 @@
+table_literal = {'reductions': {0: ('Term', 1, 0), 2: ('Term', 2, 1), 3: ('Term', 2, 2)}, 'gotos': {(5, 'Term'): 2, (6, 'Term'): 3, (1, 'Term'): 4}, 'start': 1, 'finish': 4, 'shifts': {(1, 'SUCC'): 5, (6, 'ZERO'): 0, (6, 'PRED'): 6, (1, 'ZERO'): 0, (1, 'PRED'): 6, (5, 'ZERO'): 0, (5, 'PRED'): 6, (6, 'SUCC'): 5, (5, 'SUCC'): 5}}
