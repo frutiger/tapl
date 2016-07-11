@@ -105,23 +105,6 @@ class ItemSetExtender:
                                                  (transition[0], next_item_set)
                 yield next_item_set
 
-class Observer:
-    def __init__(self):
-        self.shifts     = {}
-        self.reductions = {}
-        self.start      = None
-        self.finish     = None
-
-    def add_reduction(self, state, rule):
-        if state not in self.reductions:
-            self.reductions[state] = rule
-
-        if self.reductions[state] == rule:
-            return
-
-        raise RuntimeError('Ambiguous reduction from:\n{}'.format(
-                                       '\n'.join(str(item) for item in state)))
-
 def parse_grammar(infile):
     rules = []
     for line in infile:
