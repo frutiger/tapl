@@ -5,15 +5,15 @@ from sys         import stdin
 
 from build_table import parse_grammar, classify_terms, build
 
-order = lambda iterable: OrderedDict(map(reversed, enumerate(iterable)))
+label = lambda iterable: OrderedDict(map(reversed, enumerate(iterable)))
 
 def main():
     rules,        goal      = parse_grammar(stdin)
     nonterminals, terminals = classify_terms(rules)
     table                   = build(rules, goal)
 
-    rules     = order(rules)
-    item_sets = order(table['item_sets'])
+    rules     = label(rules)
+    item_sets = label(table['item_sets'])
 
     print({
         'start': item_sets[table['start']],

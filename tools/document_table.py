@@ -6,7 +6,7 @@ from sys         import stdin
 
 from build_table import parse_grammar, classify_terms, build
 
-order = lambda iterable: OrderedDict(map(reversed, enumerate(iterable)))
+label = lambda iterable: OrderedDict(map(reversed, enumerate(iterable)))
 
 def format_reduction(reduction):
     return reduction[0] + ' → ' + ' '.join(reduction[1]) + ' ·'
@@ -25,11 +25,11 @@ def tabulate(cols, callback=print, sep=''):
 def main():
     rules,        goal      = parse_grammar(stdin)
     nonterminals, terminals = classify_terms(rules)
-    symbols                 = order(chain(nonterminals, terminals))
+    symbols                 = label(chain(nonterminals, terminals))
     table                   = build(rules, goal)
 
-    rules     = order(rules)
-    item_sets = order(table['item_sets'])
+    rules     = label(rules)
+    item_sets = label(table['item_sets'])
 
 
     print('Given a grammar with the following production rules:')
