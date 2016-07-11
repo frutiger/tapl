@@ -20,8 +20,11 @@
         <p>
         Click to load an interpreter:
         <ul>
+            <li><a href="javascript:setInterpreter('bool');">bool</a></li>
+            <li><a href="javascript:setInterpreter('nat');">nat</a></li>
             <li><a href="javascript:setInterpreter('arith');">arith</a></li>
             <li><a href="javascript:setInterpreter('untyped');">untyped</a></li>
+            <li><a href="javascript:setInterpreter('fulluntyped');">fulluntyped</a></li>
         </ul>
         <sup>1</sup>B. C. Pierce, <em>Types and Programming Languages</em>,
         Cambridge, MA, MIT Press, 2002.
@@ -36,7 +39,7 @@
 </body>
 
 <script>
-    setInterpreter('untyped');
+    setInterpreter('fulluntyped');
     initHistory();
     hookupEvents();
 </script>
