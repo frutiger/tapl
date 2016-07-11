@@ -1,5 +1,4 @@
 # tapl.arith.toolchain
-# coding: UTF-8
 
 import re
 
