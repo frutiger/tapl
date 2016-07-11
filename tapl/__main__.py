@@ -64,19 +64,14 @@ def repl(Toolchain, Formatter):
             break
 
 def interpret(Toolchain, Formatter, infile, outfile, no_evaluate=False):
-    try:
-        tokens = lexical_analysis(Toolchain, infile)
-        tree   = syntax_analysis(Toolchain, tokens)
-        node   = semantic_analysis(Toolchain, tree)
-        if not no_evaluate:
-            term = Toolchain.evaluate(node)
-            write(Formatter, term, outfile)
-        else:
-            write(Formatter, node, outfile)
-    except (UnknownToken, IncompleteParseError, ParserError,
-            EvaluationError) as e:
-        print(e.args[0], file=sys.stderr)
-        return -1
+    tokens = lexical_analysis(Toolchain, infile)
+    tree   = syntax_analysis(Toolchain, tokens)
+    node   = semantic_analysis(Toolchain, tree)
+    if not no_evaluate:
+        term = Toolchain.evaluate(node)
+        write(Formatter, term, outfile)
+    else:
+        write(Formatter, node, outfile)
 
 def get_toolchain_and_formatter(toolchain, formatter):
     toolchain_module = 'tapl.{}.toolchain'.format(toolchain)
@@ -125,7 +120,16 @@ def main():
     else:
         outfile = open(args.output, 'w')
 
-    return interpret(Toolchain, Formatter, infile, outfile, args.no_evaluate)
+    try:
+        return interpret(Toolchain,
+                         Formatter,
+                         infile,
+                         outfile,
+                         args.no_evaluate)
+    except (UnknownToken, IncompleteParseError, ParserError,
+            EvaluationError) as e:
+        print(e.args[0], file=sys.stderr)
+        return -1
 
 if __name__ == '__main__':
     sys.exit(main())
