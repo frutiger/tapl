@@ -23,7 +23,7 @@ class ReLexer:
         self._tokens = tokens
 
     def _token_type(self, location, token):
-        for token_type, regex in self._tokens['types'].items():
+        for token_type, regex in self._tokens['types']:
             if regex.match(token):
                 return token_type
         raise UnknownToken(location, token)

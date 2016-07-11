@@ -18,12 +18,12 @@ SubTerm -> LPAREN Term RPAREN
 
     tokens = {
         'whitespace': {' ', '\n'},
-        'types': {
-            'LPAREN': re.compile('^\($'),
-            'RPAREN': re.compile('^\)$'),
-            'LAMBDA': re.compile('^\\\\$'),
-            'ID':     re.compile('^[a-z]+$'),
-        },
+        'types': (
+            ('LAMBDA', re.compile('^\\\\$')),
+            ('LPAREN', re.compile('^\($')),
+            ('RPAREN', re.compile('^\)$')),
+            ('ID',     re.compile('^[a-z]+$')),
+        )
     }
 
     table = {
