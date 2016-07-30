@@ -13,39 +13,39 @@ class Formatter:
     def finish(self):
         self._file.write(u'\n')
 
-    @accept(terms.TrueValue, 'location')
-    def write_true(self, location):
+    @accept(terms.TrueValue)
+    def true_value(self, location):
         self._file.write(u'true')
 
-    @accept(terms.FalseValue, 'location')
-    def insert_false(self, location):
+    @accept(terms.FalseValue)
+    def false_value(self, location):
         self._file.write(u'false')
 
-    @accept(terms.ZeroValue, 'location')
-    def write_zero(self, location):
+    @accept(terms.ZeroValue)
+    def zero_value(self, location):
         self._file.write(u'zero')
 
-    @accept(terms.Succ, 'location')
-    def write_succ(self, location):
+    @accept(terms.Succ)
+    def succ(self, location):
         self._file.write(u'succ ')
+        yield
 
-    @accept(terms.Pred, 'location')
-    def write_pred(self, location):
+    @accept(terms.Pred)
+    def pred(self, location):
         self._file.write(u'pred ')
+        yield
 
-    @accept(terms.IsZero, 'location')
-    def write_iszero(self, location):
+    @accept(terms.IsZero)
+    def iszero(self, location):
         self._file.write(u'iszero ')
+        yield
 
-    @accept(terms.If, 'location')
-    def write_if(self, location):
+    @accept(terms.If)
+    def if_stmt(self, location):
         self._file.write(u'if ')
-
-    @accept(terms.If, 'predicate')
-    def write_then(self, predicate):
+        yield
         self._file.write(u' then ')
-
-    @accept(terms.If, 'true_value')
-    def write_else(self, true_value):
+        yield
         self._file.write(u' else ')
+        yield
 

@@ -14,15 +14,17 @@ class Formatter:
     def finish(self):
         self._file.write(u'\n')
 
-    @accept(terms.ZeroValue, 'location')
-    def write_zero(self, location):
+    @accept(terms.ZeroValue)
+    def zero_value(self, location):
         self._file.write(u'zero')
 
-    @accept(terms.Succ, 'location')
-    def write_succ(self, location):
+    @accept(terms.Succ)
+    def succ(self, location):
         self._file.write(u'succ ')
+        yield
 
-    @accept(terms.Pred, 'location')
-    def write_pred(self, location):
+    @accept(terms.Pred)
+    def pred(self, location):
         self._file.write(u'pred ')
+        yield
 

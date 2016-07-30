@@ -1,18 +1,25 @@
 # tapl.visit
 
 def visit(term, visitor):
-    accumulator = None
-    subterms    = getattr(term, 'subterms', set())
-    for field in term.fields:
-        prop     = getattr(term, field)
-        result   = visit(prop, visitor) if field in subterms else prop
-        acceptor = visitor._acceptors.get((type(term), field), None)
-        if acceptor is not None:
-            accumulator = acceptor(visitor, result)
-    acceptor = visitor._acceptors.get((type(term), None), None)
-    if acceptor is not None:
-        accumulator = acceptor(visitor, result)
-    return accumulator
+    subterms = getattr(term, 'subterms', set())
+    acceptor = visitor._acceptors.get(type(term), None)
+    if acceptor:
+        if len(subterms):
+            acceptor = acceptor(visitor, term)
+        else:
+            acceptor(visitor, term)
+        for subterm in subterms:
+            next(acceptor)
+            visit(getattr(term, subterm), visitor)
+        if len(subterms):
+            try:
+                next(acceptor)
+            except StopIteration:
+                return
+            raise Exception('Incomplete acceptor')
+    else:
+        for subterm in subterms:
+            visit(getattr(term, subterm), visitor)
 
 def visitor(cls):
     cls._acceptors = {}
@@ -21,9 +28,9 @@ def visitor(cls):
             cls._acceptors[method._acceptor] = method
     return cls
 
-def accept(type, field=None):
+def accept(Term):
     def decorate(function):
-        function._acceptor = (type, field)
+        function._acceptor = Term
         return function
     return decorate
 

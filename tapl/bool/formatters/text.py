@@ -12,23 +12,20 @@ class Formatter:
     def finish(self):
         self._file.write(u'\n')
 
-    @accept(TrueValue, 'location')
-    def write_true(self, location):
+    @accept(terms.TrueValue)
+    def true_value(self, location):
         self._file.write(u'true')
 
-    @accept(FalseValue, 'location')
-    def insert_false(self, location):
+    @accept(terms.FalseValue)
+    def false_value(self, location):
         self._file.write(u'false')
 
-    @accept(If, 'location')
-    def write_if(self, location):
+    @accept(terms.If)
+    def if_stmt(self, location):
         self._file.write(u'if ')
-
-    @accept(If, 'predicate')
-    def write_then(self, predicate):
+        yield
         self._file.write(u' then ')
-
-    @accept(If, 'true_value')
-    def write_else(self, true_value):
+        yield
         self._file.write(u' else ')
+        yield
 
