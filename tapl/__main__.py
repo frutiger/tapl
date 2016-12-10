@@ -22,12 +22,12 @@ def syntax_analysis(Toolchain, tokens):
 
 def semantic_analysis(Toolchain, node):
     def visit(node):
-        selections = Toolchain.rules[node.reduction][0]
-        children   = [node.children[slot] for slot in selections]
-        recursions = Toolchain.rules[node.reduction][1]
+        selections = Toolchain.rules[node['reduction']][0]
+        children   = [node['children'][slot] for slot in selections]
+        recursions = Toolchain.rules[node['reduction']][1]
         children   = [visit(child) if index in recursions else child \
                                        for index, child in enumerate(children)]
-        return Toolchain.rules[node.reduction][2](node.location, *children)
+        return Toolchain.rules[node['reduction']][2](node['location'], *children)
 
     return Toolchain.semantics(visit(node))
 

@@ -13,12 +13,6 @@ class IncompleteParseError(Exception):
                                                         location.line,
                                                         location.column))
 
-class Node(object):
-    def __init__(self, location, reduction, children):
-        self.location  = location
-        self.reduction = reduction
-        self.children  = children
-
 class LRParser:
     def __init__(self, table):
         assert(set(table['shifts']) & set(table['reductions']) == set())
@@ -37,7 +31,11 @@ class LRParser:
 
         location   = tokens[0][0]
         properties = [token[1] for token in tokens]
-        node       = Node(location, rule[2], properties)
+        node       = {
+            'location':  location,
+            'reduction': rule[2],
+            'children':  properties,
+        }
         self._stack.append((location, node))
 
         if (self._stack[-2], rule[0]) not in self._table['gotos']:
