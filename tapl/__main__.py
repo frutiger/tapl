@@ -46,6 +46,8 @@ def repl(Toolchain, Formatter):
     while True:
         try:
             line = getline('> ') + '\n'
+            if line == '\n':
+                continue
             while True:
                 try:
                     tokens = lexical_analysis(Toolchain, io.StringIO(line))
