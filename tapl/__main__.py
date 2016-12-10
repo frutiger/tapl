@@ -61,7 +61,9 @@ def repl(Toolchain, Formatter):
         except (UnknownToken, ParserError, EvaluationError) as e:
             print(e.args[0], file=sys.stderr)
             continue
-        except (KeyboardInterrupt, EOFError):
+        except KeyboardInterrupt:
+            Formatter(sys.stdout).finish()
+        except EOFError:
             Formatter(sys.stdout).finish()
             break
 
