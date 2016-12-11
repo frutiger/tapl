@@ -53,10 +53,7 @@ def substitute(term, placeholder, replacement):
         return type(term)(*subterms)
 
 def is_value(term):
-    if isinstance(term, terms.Abstraction):
-        return True
-    else:
-        return False
+    return isinstance(term, terms.Abstraction)
 
 def evaluate_one_step(term, context):
     if isinstance(term, terms.Application):

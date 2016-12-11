@@ -49,10 +49,10 @@ def is_numeric(term):
                 isinstance(term, terms.Succ) and is_numeric(term.argument)))
 
 def is_value(term):
-    return any(map(lambda Type: isinstance(term, Type), (terms.Abstraction,
-                                                         terms.TrueValue,
-                                                         terms.FalseValue)) + \
-               [is_numeric(term)])
+    return any((isinstance(term, terms.Abstraction),
+                isinstance(term, terms.TrueValue),
+                isinstance(term, terms.FalseValue),
+                is_numeric(term)))
 
 def evaluate_one_step(term, context):
     if isinstance(term, terms.Application):
