@@ -10,40 +10,40 @@
 <p>
 
 <span class="syntax-metavar">Term</span> →
-<span class="syntax-keyword">zero</span><br>
+<span class="syntax-metavar">Term</span>
+<span class="syntax-metavar">SubTerm</span><br>
 
 <span class="syntax-metavar">Term</span> →
+<span class="syntax-metavar">SubTerm</span><br>
+
+<span class="syntax-metavar">SubTerm</span> →
+<span class="syntax-keyword">zero</span><br>
+
+<span class="syntax-metavar">SubTerm</span> →
 <span class="syntax-keyword">succ</span>
 <span class="syntax-metavar">Term</span><br>
 
-<span class="syntax-metavar">Term</span> →
+<span class="syntax-metavar">SubTerm</span> →
 <span class="syntax-keyword">pred</span>
 <span class="syntax-metavar">Term</span><br>
 
-<span class="syntax-metavar">Term</span> →
+<span class="syntax-metavar">SubTerm</span> →
 <span class="syntax-keyword">true</span><br>
 
-<span class="syntax-metavar">Term</span> →
+<span class="syntax-metavar">SubTerm</span> →
 <span class="syntax-keyword">false</span><br>
 
-<span class="syntax-metavar">Term</span> →
+<span class="syntax-metavar">SubTerm</span> →
 <span class="syntax-keyword">iszero</span>
 <span class="syntax-metavar">Term</span><br>
 
-<span class="syntax-metavar">Term</span> →
+<span class="syntax-metavar">SubTerm</span> →
 <span class="syntax-keyword">if</span>
 <span class="syntax-metavar">Term</span>
 <span class="syntax-keyword">then</span>
 <span class="syntax-metavar">Term</span>
 <span class="syntax-keyword">else</span>
 <span class="syntax-metavar">Term</span><br>
-
-<span class="syntax-metavar">Term</span> →
-<span class="syntax-metavar">Term</span>
-<span class="syntax-metavar">SubTerm</span><br>
-
-<span class="syntax-metavar">Term</span> →
-<span class="syntax-metavar">SubTerm</span><br>
 
 <span class="syntax-metavar">SubTerm</span> →
 <span class="syntax-metavar">id</span><br>
