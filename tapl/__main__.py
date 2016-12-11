@@ -67,15 +67,12 @@ def repl(Toolchain, Formatter):
             Formatter(sys.stdout).finish()
             break
 
-def interpret(Toolchain, Formatter, infile, outfile, no_evaluate=False):
+def interpret(Toolchain, Formatter, infile, outfile, evaluate):
     tokens = lexical_analysis(Toolchain, infile)
     tree   = syntax_analysis(Toolchain, tokens)
     node   = semantic_analysis(Toolchain, tree)
-    if not no_evaluate:
-        term = Toolchain.evaluate(node)
-        write(Formatter, term, outfile)
-    else:
-        write(Formatter, node, outfile)
+    result = Toolchain.evaluate(node) if evaluate else node
+    write(Formatter, result, outfile)
 
 def get_toolchain_and_formatter(toolchain, formatter):
     toolchain_module = 'tapl.{}.toolchain'.format(toolchain)
@@ -104,7 +101,8 @@ def main():
     parser.add_argument('-i', '--input',  type=str)
     parser.add_argument('-o', '--output', type=str)
     parser.add_argument('-f', '--format', default='text')
-    parser.add_argument('-n', '--no-evaluate', action='store_true')
+    parser.add_argument('-n', '--no-evaluate', dest='evaluate',
+                               default='true', action='store_false')
     args = parser.parse_args()
 
     Toolchain, Formatter = get_toolchain_and_formatter(args.toolchain,
@@ -129,7 +127,7 @@ def main():
                          Formatter,
                          infile,
                          outfile,
-                         args.no_evaluate)
+                         args.evaluate)
     except (UnknownToken, IncompleteParseError, ParserError,
             EvaluationError) as e:
         print(e.args[0], file=sys.stderr)
