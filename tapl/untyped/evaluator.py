@@ -18,12 +18,11 @@ def shift(term, distance, cutoff=0):
         return terms.Abstraction(term.location,
                                  term.id,
                                  shift(term.body, distance, cutoff + 1))
-    elif isinstance(term, terms.Application):
-        return terms.Application(term.location,
-                                 shift(term.lhs, distance, cutoff),
-                                 shift(term.rhs, distance, cutoff))
     else:
-        raise RuntimeError('Unknown term: {}'.format(term))
+        subterms = [term.location]
+        for subterm in term.subterms:
+            subterms.append(shift(getattr(term, subterm), distance, cutoff))
+        return type(term)(*subterms)
 
 def substitute(term, placeholder, replacement):
     if isinstance(term, terms.Variable):
@@ -46,7 +45,12 @@ def substitute(term, placeholder, replacement):
                                             placeholder,
                                             replacement))
     else:
-        raise RuntimeError('Unknown term: {}'.format(term))
+        subterms = [term.location]
+        for subterm in term.subterms:
+            subterms.append(substitute(getattr(term, subterm),
+                                       placeholder,
+                                       replacement))
+        return type(term)(*subterms)
 
 def is_value(term):
     if isinstance(term, terms.Abstraction):

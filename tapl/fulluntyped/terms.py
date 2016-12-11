@@ -127,10 +127,9 @@ def to_nameless(term, context=None):
         return Abstraction(term.location,
                            term.id,
                            to_nameless(term.body, [term.id] + context))
-    elif isinstance(term, Application):
-        return Application(term.location,
-                           to_nameless(term.lhs, context),
-                           to_nameless(term.rhs, context))
     else:
-        return term
+        subterms = [term.location]
+        for subterm in term.subterms:
+            subterms.append(to_nameless(getattr(term, subterm), context))
+        return type(term)(*subterms)
 

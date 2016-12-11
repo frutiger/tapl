@@ -18,12 +18,11 @@ def shift(term, distance, cutoff=0):
         return terms.Abstraction(term.location,
                                  term.id,
                                  shift(term.body, distance, cutoff + 1))
-    elif isinstance(term, terms.Application):
-        return terms.Application(term.location,
-                                 shift(term.lhs, distance, cutoff),
-                                 shift(term.rhs, distance, cutoff))
     else:
-        return term
+        subterms = [term.location]
+        for subterm in term.subterms:
+            subterms.append(shift(getattr(term, subterm), distance, cutoff))
+        return type(term)(*subterms)
 
 def substitute(term, placeholder, replacement):
     if isinstance(term, terms.Variable):
@@ -37,16 +36,13 @@ def substitute(term, placeholder, replacement):
                                  substitute(term.body,
                                             placeholder + 1,
                                             shift(replacement, 1)))
-    elif isinstance(term, terms.Application):
-        return terms.Application(term.location,
-                                 substitute(term.lhs,
-                                            placeholder,
-                                            replacement),
-                                 substitute(term.rhs,
-                                            placeholder,
-                                            replacement))
     else:
-        return term
+        subterms = [term.location]
+        for subterm in term.subterms:
+            subterms.append(substitute(getattr(term, subterm),
+                                       placeholder,
+                                       replacement))
+        return type(term)(*subterms)
 
 def is_numeric(term):
     return any((isinstance(term, terms.ZeroValue),
