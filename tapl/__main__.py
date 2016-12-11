@@ -67,7 +67,7 @@ def repl(Toolchain, Formatter):
             Formatter(sys.stdout).finish()
             break
 
-def interpret(Toolchain, Formatter, infile, outfile, evaluate):
+def interpret(Toolchain, Formatter, infile, outfile, evaluate=True):
     tokens = lexical_analysis(Toolchain, infile)
     tree   = syntax_analysis(Toolchain, tokens)
     node   = semantic_analysis(Toolchain, tree)
