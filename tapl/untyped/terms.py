@@ -1,14 +1,8 @@
 # tapl.untyped.terms
 # coding: UTF-8
 
+from ..terms  import Term
 from ..errors import EvaluationError
-
-class Term(object):
-    name     = 'Term'
-    subterms = tuple()
-
-    def __init__(self, location):
-        self.location = location
 
 class Variable(Term):
     def __init__(self, location, id):

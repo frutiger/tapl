@@ -1,11 +1,7 @@
 # tapl.bool.terms
 # coding: UTF-8
 
-class Term(object):
-    subterms = tuple()
-
-    def __init__(self, location):
-        self.location = location
+from ..terms import Term
 
 class TrueValue(Term):
     def __init__(self, location):
