@@ -80,17 +80,12 @@ def get_toolchain_and_formatter(toolchain, formatter):
         Toolchain = getattr(importlib.import_module(toolchain_module),
                            'Toolchain')
     except ImportError as e:
-        print('Unknown toolchain: ' + toolchain, file=sys.stderr)
-        return -1
+        raise RuntimeError('Unknown toolchain: ' + toolchain)
 
-    formatter_module = 'tapl.{}.formatters.{}'.format(toolchain, formatter)
     try:
-        Formatter = getattr(importlib.import_module(formatter_module),
-                           'Formatter')
-    except ImportError as e:
-        print(formatter_module)
-        print('Unknown formatter: ' + formatter, file=sys.stderr)
-        return -1
+        Formatter = Toolchain.formatters[formatter]
+    except KeyError as e:
+        raise RuntimeError('Unknown formatter: ' + formatter)
 
     return Toolchain, Formatter
 
@@ -105,8 +100,12 @@ def main():
                                default='true', action='store_false')
     args = parser.parse_args()
 
-    Toolchain, Formatter = get_toolchain_and_formatter(args.toolchain,
-                                                       args.format)
+    try:
+        Toolchain, Formatter = get_toolchain_and_formatter(args.toolchain,
+                                                           args.format)
+    except RuntimeError as e:
+        print(e.args[0], file=sys.stderr)
+        return -1
 
     if args.input is None and args.output is None:
         import readline

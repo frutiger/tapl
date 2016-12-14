@@ -2,9 +2,11 @@
 
 import re
 
-from .terms     import ZeroValue, Succ, Pred, TrueValue, FalseValue, IsZero, If
-from .table     import table_literal
-from .evaluator import evaluate
+from .terms      import (ZeroValue, Succ, Pred,
+                         TrueValue, FalseValue, IsZero, If)
+from .table      import table_literal
+from .evaluator  import evaluate
+from .formatters import text
 
 class Toolchain(object):
     '''Grammar:
@@ -44,6 +46,10 @@ Term -> IF Term THEN Term ELSE Term
         ((1,),      {0},       IsZero),      # IsZero Term
         ((1, 3, 5), {0, 1, 2}, If),          # IF Term THEN Term ELSE Term
     )
+
+    formatters = {
+        'text': text.Formatter,
+    }
 
     @staticmethod
     def semantics(node):

@@ -2,9 +2,10 @@
 
 import re
 
-from .terms     import Variable, Abstraction, Application, to_nameless
-from .table     import table_literal
-from .evaluator import evaluate
+from .terms      import Variable, Abstraction, Application, to_nameless
+from .table      import table_literal
+from .evaluator  import evaluate
+from .formatters import text, dot
 
 class Toolchain(object):
     '''Grammar:
@@ -35,6 +36,11 @@ SubTerm -> LPAREN Term RPAREN
         ((1, 2), {1},    Abstraction),     # LAMBDA ID Term
         ((1,),   {0},    lambda _, x: x),  # LPAREN Term RPAREN
     )
+
+    formatters = {
+        'text': text.Formatter,
+        'dot':  dot.Formatter,
+    }
 
     @staticmethod
     def semantics(node):

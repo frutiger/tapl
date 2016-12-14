@@ -2,9 +2,10 @@
 
 import re
 
-from .terms     import TrueValue, FalseValue, If
-from .table     import table_literal
-from .evaluator import evaluate
+from .terms      import TrueValue, FalseValue, If
+from .table      import table_literal
+from .evaluator  import evaluate
+from .formatters import text
 
 class Toolchain(object):
     '''Grammar:
@@ -32,6 +33,10 @@ Term -> IF Term THEN Term ELSE Term
         ((),        {},        FalseValue),   # FALSE
         ((1, 3, 5), {0, 1, 2}, If),           # IF Term THEN Term ELSE Term
     )
+
+    formatters = {
+        'text': text.Formatter,
+    }
 
     @staticmethod
     def semantics(node):
