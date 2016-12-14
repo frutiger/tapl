@@ -2,7 +2,6 @@
 # coding: UTF-8
 
 class Term(object):
-    fields   = ('location',)
     subterms = tuple()
 
     def __init__(self, location):
@@ -17,7 +16,6 @@ class FalseValue(Term):
         Term.__init__(self, location)
 
 class If(Term):
-    fields   = Term.fields   + ('predicate', 'true_value', 'false_value')
     subterms = Term.subterms + ('predicate', 'true_value', 'false_value')
 
     def __init__(self, location, predicate, true_value, false_value):

@@ -5,15 +5,12 @@ from ..errors import EvaluationError
 
 class Term(object):
     name     = 'Term'
-    fields   = ('location',)
     subterms = tuple()
 
     def __init__(self, location):
         self.location = location
 
 class Variable(Term):
-    fields   = Term.fields + ('id',)
-
     def __init__(self, location, id):
         Term.__init__(self, location)
         self.id = id
@@ -22,7 +19,6 @@ class Variable(Term):
         return 'Var({})'.format(self.id)
 
 class Abstraction(Term):
-    fields   = Term.fields   + ('id', 'body')
     subterms = Term.subterms + ('body',)
 
     def __init__(self, location, id, body):
@@ -34,7 +30,6 @@ class Abstraction(Term):
         return 'Abs({}, {})'.format(self.id, self.body)
 
 class Application(Term):
-    fields   = Term.fields   + ('lhs', 'rhs')
     subterms = Term.subterms + ('lhs', 'rhs')
 
     def __init__(self, location, lhs, rhs):

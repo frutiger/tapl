@@ -3,7 +3,6 @@
 
 class Term(object):
     name     = 'Term'
-    fields   = ('location',)
     subterms = tuple()
 
     def __init__(self, location):
@@ -22,7 +21,6 @@ class FalseValue(Term):
         Term.__init__(self, location)
 
 class Succ(Term):
-    fields   = Term.fields   + ('argument',)
     subterms = Term.subterms + ('argument',)
 
     def __init__(self, location, argument):
@@ -30,7 +28,6 @@ class Succ(Term):
         self.argument = argument
 
 class Pred(Term):
-    fields   = Term.fields   + ('argument',)
     subterms = Term.subterms + ('argument',)
 
     def __init__(self, location, argument):
@@ -38,7 +35,6 @@ class Pred(Term):
         self.argument = argument
 
 class IsZero(Term):
-    fields   = Term.fields   + ('argument',)
     subterms = Term.subterms + ('argument',)
 
     def __init__(self, location, argument):
@@ -46,7 +42,6 @@ class IsZero(Term):
         self.argument = argument
 
 class If(Term):
-    fields   = Term.fields   + ('predicate', 'true_value', 'false_value')
     subterms = Term.subterms + ('predicate', 'true_value', 'false_value')
 
     def __init__(self, location, predicate, true_value, false_value):

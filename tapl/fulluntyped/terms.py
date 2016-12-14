@@ -5,7 +5,6 @@ from ..errors import EvaluationError
 
 class Term(object):
     name     = 'Term'
-    fields   = ('location',)
     subterms = tuple()
 
     def __init__(self, location):
@@ -33,7 +32,6 @@ class FalseValue(Term):
         return 'False'
 
 class Succ(Term):
-    fields   = Term.fields   + ('argument',)
     subterms = Term.subterms + ('argument',)
 
     def __init__(self, location, argument):
@@ -44,7 +42,6 @@ class Succ(Term):
         return 'Succ({})'.format(self.argument)
 
 class Pred(Term):
-    fields   = Term.fields   + ('argument',)
     subterms = Term.subterms + ('argument',)
 
     def __init__(self, location, argument):
@@ -55,7 +52,6 @@ class Pred(Term):
         return 'Pred({})'.format(self.argument)
 
 class IsZero(Term):
-    fields   = Term.fields   + ('argument',)
     subterms = Term.subterms + ('argument',)
 
     def __init__(self, location, argument):
@@ -66,7 +62,6 @@ class IsZero(Term):
         return 'IsZero({})'.format(self.argument)
 
 class If(Term):
-    fields   = Term.fields   + ('predicate', 'true_value', 'false_value')
     subterms = Term.subterms + ('predicate', 'true_value', 'false_value')
 
     def __init__(self, location, predicate, true_value, false_value):
@@ -81,7 +76,6 @@ class If(Term):
                                        self.false_value)
 
 class Variable(Term):
-    fields   = Term.fields + ('id',)
 
     def __init__(self, location, id):
         Term.__init__(self, location)
@@ -91,7 +85,6 @@ class Variable(Term):
         return 'Var({})'.format(self.id)
 
 class Abstraction(Term):
-    fields   = Term.fields   + ('id', 'body')
     subterms = Term.subterms + ('body',)
 
     def __init__(self, location, id, body):
@@ -103,7 +96,6 @@ class Abstraction(Term):
         return 'Abs({}, {})'.format(self.id, self.body)
 
 class Application(Term):
-    fields   = Term.fields   + ('lhs', 'rhs')
     subterms = Term.subterms + ('lhs', 'rhs')
 
     def __init__(self, location, lhs, rhs):

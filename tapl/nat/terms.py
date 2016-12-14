@@ -2,7 +2,6 @@
 # encoding: UTF-8
 
 class Term(object):
-    fields   = ('location',)
     subterms = tuple()
 
     def __init__(self, location):
@@ -13,7 +12,6 @@ class ZeroValue(Term):
         Term.__init__(self, location)
 
 class Succ(Term):
-    fields   = Term.fields   + ('argument',)
     subterms = Term.subterms + ('argument',)
 
     def __init__(self, location, argument):
@@ -21,7 +19,6 @@ class Succ(Term):
         self.argument = argument
 
 class Pred(Term):
-    fields   = Term.fields   + ('argument',)
     subterms = Term.subterms + ('argument',)
 
     def __init__(self, location, argument):
