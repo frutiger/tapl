@@ -1,7 +1,8 @@
 # tapl.bool.formatters.text
 
 from ...visit import accept, visitor
-from ..terms  import TrueValue, FalseValue, If
+
+from .. import terms
 
 @visitor
 class Formatter:
