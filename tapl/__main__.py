@@ -9,30 +9,11 @@ import locale
 import os
 import sys
 
-from .errors   import EvaluationError
-from .lrparser import LRParser, IncompleteParseError, ParserError
-from .relexer  import ReLexer, UnknownToken
-from .visit    import visit
-
-def lexical_analysis(Toolchain, source):
-    return ReLexer(Toolchain.tokens).lex(source)
-
-def syntax_analysis(Toolchain, tokens):
-    return LRParser(Toolchain.table).parse(tokens)
-
-def semantic_analysis(Toolchain, node):
-    def visit(node):
-        selections = Toolchain.rules[node['reduction']][0]
-        children   = [node['children'][slot] for slot in selections]
-        recursions = Toolchain.rules[node['reduction']][1]
-        children   = [visit(child) if index in recursions else child \
-                                       for index, child in enumerate(children)]
-        return Toolchain.rules[node['reduction']][2](node['location'], *children)
-
-    if hasattr(Toolchain, 'semantics'):
-        return Toolchain.semantics(visit(node))
-    else:
-        return visit(node)
+from .errors     import EvaluationError
+from .lrparser   import IncompleteParseError, ParserError
+from .relexer    import UnknownToken
+from .visit      import visit
+from .           import analysis
 
 def write(Formatter, term, out):
     formatter = Formatter(out)
@@ -53,12 +34,12 @@ def repl(Toolchain, Formatter):
                 continue
             while True:
                 try:
-                    tokens = lexical_analysis(Toolchain, io.StringIO(line))
-                    tree   = syntax_analysis(Toolchain, tokens)
+                    tokens = analysis.lexical(Toolchain, io.StringIO(line))
+                    tree   = analysis.syntax(Toolchain, tokens)
                     break
                 except IncompleteParseError:
                     line = line + getline('. ') + '\n'
-            node = semantic_analysis(Toolchain, tree)
+            node = analysis.semantic(Toolchain, tree)
             term = Toolchain.evaluate(node)
             write(Formatter, term, sys.stdout)
         except (UnknownToken, ParserError, EvaluationError) as e:
@@ -71,9 +52,9 @@ def repl(Toolchain, Formatter):
             break
 
 def interpret(Toolchain, Formatter, infile, outfile, evaluate=True):
-    tokens = lexical_analysis(Toolchain, infile)
-    tree   = syntax_analysis(Toolchain, tokens)
-    node   = semantic_analysis(Toolchain, tree)
+    tokens = analysis.lexical(Toolchain, infile)
+    tree   = analysis.syntax(Toolchain, tokens)
+    node   = analysis.semantic(Toolchain, tree)
     result = Toolchain.evaluate(node) if evaluate else node
     write(Formatter, result, outfile)
 
