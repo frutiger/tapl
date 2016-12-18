@@ -42,9 +42,7 @@ SubTerm -> LPAREN Term RPAREN
         'dot':  dot.Formatter,
     }
 
-    @staticmethod
-    def semantics(node):
-        return to_nameless(node)
+    semantics = to_nameless
 
     @staticmethod
     def evaluate(node):

@@ -37,10 +37,6 @@ Term -> PRED Term
     }
 
     @staticmethod
-    def semantics(node):
-        return node
-
-    @staticmethod
     def evaluate(node):
         return evaluate(node)
 

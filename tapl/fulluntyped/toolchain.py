@@ -65,9 +65,7 @@ SubTerm -> LPAREN Term RPAREN
         'text': text.Formatter,
     }
 
-    @staticmethod
-    def semantics(node):
-        return to_nameless(node)
+    semantics = to_nameless
 
     @staticmethod
     def evaluate(node):

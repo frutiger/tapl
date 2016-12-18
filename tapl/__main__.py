@@ -29,7 +29,10 @@ def semantic_analysis(Toolchain, node):
                                        for index, child in enumerate(children)]
         return Toolchain.rules[node['reduction']][2](node['location'], *children)
 
-    return Toolchain.semantics(visit(node))
+    if hasattr(Toolchain, 'semantics'):
+        return Toolchain.semantics(visit(node))
+    else:
+        return visit(node)
 
 def write(Formatter, term, out):
     formatter = Formatter(out)
