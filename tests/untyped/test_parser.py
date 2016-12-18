@@ -3,30 +3,19 @@
 from unittest import TestCase
 from io       import StringIO
 
-from tapl.relexer        import Location, ReLexer
-from tapl.untyped.tokens import tokens
+from tapl                   import analysis
+from tapl.lrparser          import IncompleteParseError
 
-from tapl.lrparser         import IncompleteParseError, LRParser
-from tapl.untyped.table    import table
-from tapl.untyped.concrete import Abstraction as Abs, \
-                                  Application as App, \
-                                  Variable    as Var, \
-                                  Parens      as Par
-
-lexer = ReLexer(tokens)
-def lex(source):
-    return lexer.lex(source)
+from tapl.untyped.toolchain import Toolchain
+from tapl.untyped.terms     import Abstraction as Abs, \
+                                   Application as App, \
+                                   Variable    as Var
 
 def p(text):
-    parser = LRParser(table)
-    return parser.parse(lex(StringIO(text)))
-
-class Variable(TestCase):
-    def test(self):
-        t = p(u'x')
-
-        assert(isinstance(t, Var))
-        assert(u'x' == t.id)
+    tokens = analysis.lexical(Toolchain, StringIO(text))
+    tree   = analysis.syntax(Toolchain, tokens)
+    node   = analysis.semantic(Toolchain, tree)
+    return node
 
 class Identity(TestCase):
     def test(self):
@@ -37,7 +26,7 @@ class Identity(TestCase):
         t = t.body
 
         assert(isinstance(t, Var))
-        assert(u'x'  == t.id)
+        assert(0 == t.id)
 
 class SelfApplication(TestCase):
     def test(self):
@@ -52,10 +41,10 @@ class SelfApplication(TestCase):
         tl = t.lhs
 
         assert(isinstance(tr, Var))
-        assert(u'x' == tr.id)
+        assert(0 == tr.id)
 
         assert(isinstance(tl, Var))
-        assert(u'x' == tl.id)
+        assert(0 == tl.id)
 
 class TripleApplication(TestCase):
     def test(self):
@@ -70,7 +59,7 @@ class TripleApplication(TestCase):
         tl = t.lhs
 
         assert(isinstance(tr, Var))
-        assert(u'x' == tr.id)
+        assert(0 == tr.id)
 
         t = tl
         assert(isinstance(t, App))
@@ -78,41 +67,39 @@ class TripleApplication(TestCase):
         tl = t.lhs
 
         assert(isinstance(tr, Var))
-        assert(u'x' == tr.id)
+        assert(0 == tr.id)
 
         assert(isinstance(tl, Var))
-        assert(u'x' == tl.id)
+        assert(0 == tl.id)
 
 class ParensIdentity(TestCase):
     def test(self):
         t = p(u'(\\x x)')
-
-        assert(isinstance(t, Par))
-        t = t.subterm
 
         assert(isinstance(t, Abs))
         assert(u'x' == t.id)
         t = t.body
 
         assert(isinstance(t, Var))
-        assert(u'x' == t.id)
+        assert(0 == t.id)
 
 class ParensSelfApplication(TestCase):
     def test(self):
-        t = p(u'(x x)')
+        t = p(u'\\x (x x)')
 
-        assert(isinstance(t, Par))
-        t = t.subterm
+        assert(isinstance(t, Abs))
+        assert(u'x' == t.id)
+        t = t.body
 
         assert(isinstance(t, App))
-
-        tl = t.lhs
-        assert(isinstance(tl, Var))
-        assert(u'x' == tl.id)
-
         tr = t.rhs
+        tl = t.lhs
+
         assert(isinstance(tr, Var))
-        assert(u'x' == tr.id)
+        assert(0 == tr.id)
+
+        assert(isinstance(tl, Var))
+        assert(0 == tl.id)
 
 class NestedLambda(TestCase):
     def test(self):
@@ -123,11 +110,11 @@ class NestedLambda(TestCase):
 
         assert(isinstance(t, App))
         assert(isinstance(t.lhs, Var))
-        assert(u'x' == t.lhs.id)
+        assert(0 == t.lhs.id)
 
         assert(isinstance(t.rhs, Abs))
         assert(isinstance(t.rhs.body, Var))
-        assert(u'x' == t.rhs.body.id)
+        assert(0 == t.rhs.body.id)
 
 class UnbalancedParensFailure(TestCase):
     def test(self):

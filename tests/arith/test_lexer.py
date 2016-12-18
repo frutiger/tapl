@@ -3,13 +3,13 @@
 from unittest import TestCase
 from io       import StringIO
 
-from tapl.relexer      import Location, ReLexer
-from tapl.arith.tokens import tokens
+from tapl.relexer         import Location, ReLexer
+from tapl.arith.toolchain import Toolchain
 
 def l(line, column):
     return Location(line, column)
 
-lexer = ReLexer(tokens)
+lexer = ReLexer(Toolchain.tokens)
 
 def lex(text):
     return lexer.lex(StringIO(text))
