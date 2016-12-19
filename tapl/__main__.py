@@ -9,7 +9,7 @@ import locale
 import os
 import sys
 
-from .errors     import EvaluationError
+from .errors     import EvaluationError, TypeError
 from .lrparser   import IncompleteParseError, ParserError
 from .relexer    import UnknownToken
 from .visit      import visit
@@ -40,9 +40,11 @@ def repl(Toolchain, Formatter):
                 except IncompleteParseError:
                     line = line + getline('. ') + '\n'
             node = analysis.semantic(Toolchain, tree)
+            if hasattr(Toolchain, 'typeof'):
+                sys.stdout.write(Toolchain.typeof(node) + ': ')
             result = evaluation.evaluate(node, Toolchain.Evaluator())
             write(Formatter, result, sys.stdout)
-        except (UnknownToken, ParserError, EvaluationError) as e:
+        except (UnknownToken, ParserError, EvaluationError, TypeError) as e:
             print(e.args[0], file=sys.stderr)
             continue
         except KeyboardInterrupt:
@@ -55,6 +57,8 @@ def interpret(Toolchain, Formatter, infile, outfile, evaluate=True):
     tokens = analysis.lexical(Toolchain, infile)
     tree   = analysis.syntax(Toolchain, tokens)
     node   = analysis.semantic(Toolchain, tree)
+    if hasattr(Toolchain, 'typeof'):
+        outfile.write(Toolchain.typeof(node) + ': ')
     result = evaluation.evaluate(node, Toolchain.Evaluator()) if evaluate \
                                                                       else node
     write(Formatter, result, outfile)
@@ -113,7 +117,7 @@ def main():
                          outfile,
                          args.evaluate)
     except (UnknownToken, IncompleteParseError, ParserError,
-            EvaluationError) as e:
+            EvaluationError, TypeError) as e:
         print(e.args[0], file=sys.stderr)
         return -1
 
