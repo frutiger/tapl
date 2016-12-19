@@ -2,10 +2,8 @@
 
 import copy
 
-from . import terms
-
-class NoRuleApplies(Exception):
-    pass
+from ..evaluation import NoRuleApplies
+from .            import terms
 
 def shift(term, distance, cutoff=0):
     if isinstance(term, terms.Variable):
@@ -36,14 +34,6 @@ def substitute(term, placeholder, replacement):
                                  substitute(term.body,
                                             placeholder + 1,
                                             shift(replacement, 1)))
-    elif isinstance(term, terms.Application):
-        return terms.Application(term.location,
-                                 substitute(term.lhs,
-                                            placeholder,
-                                            replacement),
-                                 substitute(term.rhs,
-                                            placeholder,
-                                            replacement))
     else:
         subterms = [term.location]
         for subterm in term.subterms:
@@ -55,31 +45,29 @@ def substitute(term, placeholder, replacement):
 def is_value(term):
     return isinstance(term, terms.Abstraction)
 
-def evaluate_one_step(term, context):
-    if isinstance(term, terms.Application):
-        if isinstance(term.lhs, terms.Abstraction) and is_value(term.rhs):
-            result = copy.deepcopy(term.rhs)
-            result = shift(result, 1)
-            result = substitute(term.lhs.body, 0, result)
-            result = shift(result, -1)
-            return result
-        elif is_value(term.lhs):
-            return terms.Application(term.location,
-                                     term.lhs,
-                                     evaluate_one_step(term.rhs, context))
-        else:
-            return terms.Application(term.location,
-                                     evaluate_one_step(term.lhs, context),
-                                     term.rhs)
-    else:
-        raise NoRuleApplies()
+class Evaluator(object):
+    def __init__(self, sub=None, is_value=is_value):
+        self._sub      = sub if sub is not None else self
+        self._is_value = is_value
 
-def evaluate(term, context=None):
-    if context == None:
-        context = []
-    try:
-        next_step = evaluate_one_step(term, context)
-        return evaluate(next_step, context)
-    except NoRuleApplies:
-        return term
+    def one_step(self, term):
+        if isinstance(term, terms.Application):
+            if isinstance(term.lhs, terms.Abstraction) and \
+                                                      self._is_value(term.rhs):
+                result = copy.deepcopy(term.rhs)
+                result = shift(result, 1)
+                result = substitute(term.lhs.body, 0, result)
+                result = shift(result, -1)
+                return result
+            if self._is_value(term.lhs):
+                return terms.Application(term.location,
+                                         term.lhs,
+                                         self._sub.one_step(term.rhs))
+            return terms.Application(term.location,
+                                     self._sub.one_step(term.lhs),
+                                     term.rhs)
+        if isinstance(term, terms.Abstraction):
+            raise NoRuleApplies()
+        if isinstance(term, terms.Variable):
+            raise NoRuleApplies()
 

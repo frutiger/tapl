@@ -5,7 +5,7 @@ import re
 from .terms      import (ZeroValue, TrueValue, FalseValue, Succ, Pred, IsZero,
                          If, Variable, Abstraction, Application, to_nameless)
 from .table      import table_literal
-from .evaluator  import evaluate
+from .evaluator  import Evaluator
 from .formatters import text
 
 class Toolchain(object):
@@ -69,7 +69,5 @@ SubTerm -> LPAREN Term RPAREN
     def semantics(node):
         return to_nameless(node)
 
-    @staticmethod
-    def evaluate(node):
-        return evaluate(node)
+    Evaluator = Evaluator
 

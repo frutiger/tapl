@@ -13,7 +13,7 @@ from .errors     import EvaluationError
 from .lrparser   import IncompleteParseError, ParserError
 from .relexer    import UnknownToken
 from .visit      import visit
-from .           import analysis
+from .           import analysis, evaluation
 
 def write(Formatter, term, out):
     formatter = Formatter(out)
@@ -40,8 +40,8 @@ def repl(Toolchain, Formatter):
                 except IncompleteParseError:
                     line = line + getline('. ') + '\n'
             node = analysis.semantic(Toolchain, tree)
-            term = Toolchain.evaluate(node)
-            write(Formatter, term, sys.stdout)
+            result = evaluation.evaluate(node, Toolchain.Evaluator())
+            write(Formatter, result, sys.stdout)
         except (UnknownToken, ParserError, EvaluationError) as e:
             print(e.args[0], file=sys.stderr)
             continue
@@ -55,7 +55,8 @@ def interpret(Toolchain, Formatter, infile, outfile, evaluate=True):
     tokens = analysis.lexical(Toolchain, infile)
     tree   = analysis.syntax(Toolchain, tokens)
     node   = analysis.semantic(Toolchain, tree)
-    result = Toolchain.evaluate(node) if evaluate else node
+    result = evaluation.evaluate(node, Toolchain.Evaluator()) if evaluate \
+                                                                      else node
     write(Formatter, result, outfile)
 
 def get_toolchain_and_formatter(toolchain, formatter):

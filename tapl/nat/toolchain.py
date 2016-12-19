@@ -4,7 +4,7 @@ import re
 
 from .terms      import ZeroValue, Succ, Pred
 from .table      import table_literal
-from .evaluator  import evaluate
+from .evaluator  import Evaluator
 from .formatters import text
 
 class Toolchain(object):
@@ -36,7 +36,5 @@ Term -> PRED Term
         'text': text.Formatter,
     }
 
-    @staticmethod
-    def evaluate(node):
-        return evaluate(node)
+    Evaluator = Evaluator
 

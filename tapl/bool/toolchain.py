@@ -4,7 +4,7 @@ import re
 
 from .terms      import TrueValue, FalseValue, If
 from .table      import table_literal
-from .evaluator  import evaluate
+from .evaluator  import Evaluator
 from .formatters import text
 
 class Toolchain(object):
@@ -38,7 +38,5 @@ Term -> IF Term THEN Term ELSE Term
         'text': text.Formatter,
     }
 
-    @staticmethod
-    def evaluate(node):
-        return evaluate(node)
+    Evaluator = Evaluator
 
