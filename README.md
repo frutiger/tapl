@@ -1,3 +1,5 @@
+[![Test status](https://img.shields.io/travis/frutiger/tapl.svg?label=tests&style=flat-square)](https://travis-ci.org/frutiger/tapl)
+
 ## Interpreters of TAPL
 
 This repository contains implementations of interpreters from
