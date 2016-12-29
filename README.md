@@ -1,4 +1,5 @@
 [![Test status](https://img.shields.io/travis/frutiger/tapl.svg?label=tests&style=flat-square)](https://travis-ci.org/frutiger/tapl)
+[![Code coverage](https://img.shields.io/codecov/c/github/frutiger/tapl.svg?style=flat-square)](https://codecov.io/gh/frutiger/tapl)
 
 ## Interpreters of TAPL
 
