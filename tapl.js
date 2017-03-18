@@ -107,16 +107,16 @@ var historyCursor = 0;
 function onInputKeydown(e) {
     var history = getInterpreterHistory();
 
-    switch (e.code) {
-      case 'ArrowUp': {
+    switch (e.keyCode) {
+      case 38: {
         ++historyCursor;
       } break;
 
-      case 'ArrowDown': {
+      case 40: {
         --historyCursor;
       } break;
 
-      case 'Enter': {
+      case 13: {
         execute();
         historyCursor = 0;
       } break;
