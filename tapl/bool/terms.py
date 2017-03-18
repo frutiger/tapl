@@ -1,5 +1,4 @@
 # tapl.bool.terms
-# coding: UTF-8
 
 from ..terms import Term
 

@@ -1,5 +1,4 @@
 # tapl.nat.terms
-# encoding: UTF-8
 
 from ..terms import Term
 

@@ -1,5 +1,4 @@
 # tapl.nat.formatters.text
-# coding=UTF-8
 
 from ...visit import accept, visitor
 

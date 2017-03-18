@@ -1,5 +1,4 @@
 # tapl.arith.terms
-# coding: UTF-8
 
 from ..terms      import Term
 from ..bool.terms import *

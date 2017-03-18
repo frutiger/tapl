@@ -39,7 +39,7 @@ class Formatter:
 
     @accept(terms.Abstraction)
     def abstraction(self, abstraction):
-        self._add_parent(u'"\u03bb"')
+        self._add_parent(u'"λ"')
         yield
         self._stack.pop()
 

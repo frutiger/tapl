@@ -1,5 +1,4 @@
 # tapl.fulluntyped.terms
-# coding: UTF-8
 
 from ..terms         import Term
 from ..errors        import EvaluationError
