@@ -142,3 +142,22 @@ function hookupEvents() {
     input.addEventListener('keydown', onInputKeydown);
 }
 
+function hookupFocusOnClick() {
+    var input = document.getElementById('input');
+    var rules = document.getElementById('rules');
+
+    var windows = [{
+        window:      window,
+        eventTarget: window,
+    }, {
+        window:      rules.contentWindow,
+        eventTarget: rules,
+    }];
+    windows.forEach(function (window, index) {
+        window.eventTarget.addEventListener('load', function () {
+            window.window.document.addEventListener('click',
+                                                    input.focus.bind(input));
+        });
+    });
+}
+
